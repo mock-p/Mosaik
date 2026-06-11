@@ -1,0 +1,969 @@
+/* ============================================================
+   Mosaik · component styles
+   Ported from the Claude Design handoff (assets.css), with an
+   `mk-` prefix. Light tokens live on :root, dark under `.dark`.
+   ============================================================ */
+
+/* ============================================================
+   BUTTONS — "field DNA": 1.5px border, focus-style halo,
+   radial sphere fill animation from the center on hover.
+   ============================================================ */
+.mk-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: var(--mk-font-btn);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 1.5px solid transparent;
+    --mk-halo: var(--mk-focus-halo);
+    /* radial fill: a sphere of --mk-fill grows from the center */
+    background-image: radial-gradient(
+        circle farthest-side,
+        var(--mk-fill, transparent) 0%,
+        var(--mk-fill, transparent) 99%,
+        transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 0px 0px;
+    transition:
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.15s ease,
+        border-radius 0.2s ease,
+        transform 0.08s ease,
+        background-size 0.38s cubic-bezier(0.65, 0, 0.35, 1);
+    /* md default */
+    height: 42px;
+    padding: 0 20px;
+    font-size: 14.5px;
+    letter-spacing: 0.01em;
+    border-radius: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
+}
+.mk-btn:hover:not(:disabled),
+.mk-btn.is-hover {
+    box-shadow: 0 0 0 3px var(--mk-halo);
+    background-size: 420px 420px;
+}
+.mk-btn:active:not(:disabled),
+.mk-btn.is-active {
+    transform: translateY(1px);
+    box-shadow: 0 0 0 1.5px var(--mk-halo);
+}
+.mk-btn:focus-visible,
+.mk-btn.is-focus {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: 2px;
+}
+.mk-btn:disabled,
+.mk-btn.is-disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+
+/* sizes */
+.mk-btn-sm {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 13px;
+    border-radius: calc(var(--mk-c1) * 0.68) calc(var(--mk-c2) * 0.85)
+        calc(var(--mk-c1) * 0.68) calc(var(--mk-c2) * 0.85);
+}
+.mk-btn-lg {
+    height: 50px;
+    padding: 0 26px;
+    font-size: 16px;
+    border-radius: calc(var(--mk-c1) * 1.2) calc(var(--mk-c2) * 1)
+        calc(var(--mk-c1) * 1.2) calc(var(--mk-c2) * 1);
+}
+
+/* variants */
+.mk-btn-primary {
+    --mk-fill: var(--mk-primary-hover);
+    background-color: var(--mk-primary);
+    border-color: var(--mk-primary);
+    color: var(--mk-on-primary);
+}
+.mk-btn-primary:hover:not(:disabled),
+.mk-btn-primary.is-hover {
+    border-color: var(--mk-primary-hover);
+}
+
+.mk-btn-secondary {
+    --mk-fill: color-mix(in srgb, var(--mk-secondary) 62%, #ffffff);
+    --mk-halo: color-mix(in srgb, var(--mk-secondary) 22%, transparent);
+    background-color: var(--mk-field-bg);
+    border-color: var(--mk-secondary);
+    color: #d6473c;
+}
+.mk-btn-secondary:hover:not(:disabled),
+.mk-btn-secondary.is-hover {
+    border-color: color-mix(in srgb, var(--mk-secondary) 62%, #ffffff);
+    color: var(--mk-on-secondary);
+}
+.dark .mk-btn-secondary {
+    --mk-fill: var(--mk-secondary);
+    color: #ff8278;
+}
+.dark .mk-btn-secondary:hover:not(:disabled),
+.dark .mk-btn-secondary.is-hover {
+    border-color: var(--mk-secondary);
+    color: var(--mk-on-secondary);
+}
+
+.mk-btn-tonal {
+    --mk-fill: var(--mk-tonal-hover);
+    background-color: var(--mk-tonal);
+    color: var(--mk-tonal-text);
+}
+
+.mk-btn-outline {
+    background-color: var(--mk-field-bg);
+    border-color: var(--mk-border);
+    color: var(--mk-text);
+}
+.mk-btn-outline:hover:not(:disabled),
+.mk-btn-outline.is-hover {
+    border-color: var(--mk-border-strong);
+}
+.dark .mk-btn-outline {
+    border-color: var(--mk-border-strong);
+}
+.dark .mk-btn-outline:hover:not(:disabled),
+.dark .mk-btn-outline.is-hover {
+    border-color: #777dc9;
+}
+
+.mk-btn-ghost {
+    --mk-fill: var(--mk-tonal);
+    background-color: transparent;
+    color: var(--mk-tonal-text);
+}
+.mk-btn-ghost:hover:not(:disabled),
+.mk-btn-ghost.is-hover {
+    box-shadow: none;
+}
+
+.mk-btn-danger {
+    --mk-fill: var(--mk-danger);
+    --mk-halo: color-mix(in srgb, var(--mk-danger) 18%, transparent);
+    background-color: var(--mk-field-bg);
+    border-color: var(--mk-danger);
+    color: var(--mk-danger);
+}
+.mk-btn-danger:hover:not(:disabled),
+.mk-btn-danger.is-hover {
+    color: #ffffff;
+}
+
+/* icon-only */
+.mk-btn-icon {
+    width: 42px;
+    padding: 0;
+}
+.mk-btn-icon.mk-btn-sm {
+    width: 32px;
+}
+.mk-btn-icon.mk-btn-lg {
+    width: 50px;
+}
+
+/* modifiers */
+.mk-btn-block {
+    width: 100%;
+}
+.mk-btn-upper {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+/* svg glyphs inside buttons */
+.mk-btn svg {
+    display: block;
+    flex: none;
+}
+
+/* loading */
+.mk-btn.is-loading {
+    pointer-events: none;
+}
+.mk-btn .mk-spinner {
+    animation: mk-spin 0.9s cubic-bezier(0.6, 0.15, 0.4, 0.85) infinite;
+    transform-origin: 50% 58%;
+}
+@keyframes mk-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .mk-btn .mk-spinner {
+        animation: none;
+    }
+    .mk-btn {
+        transition-duration: 0.18s, 0.18s, 0.15s, 0.2s, 0.08s, 0s;
+    }
+}
+
+/* ============================================================
+   FIELDS
+   ============================================================ */
+.mk-field {
+    display: grid;
+    gap: 7px;
+    text-align: left;
+}
+
+.mk-field-label {
+    font-family: var(--mk-font-display);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mk-text);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.mk-field-label .mk-field-hint {
+    font-family: var(--mk-font-ui);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--mk-muted);
+    margin-left: auto;
+    font-size: 12px;
+}
+
+.mk-input,
+.mk-textarea {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1.5px solid var(--mk-border);
+    background: var(--mk-field-bg);
+    color: var(--mk-text);
+    font-family: var(--mk-font-ui);
+    font-size: 15px;
+    border-radius: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.mk-input {
+    height: 44px;
+    padding: 0 14px;
+}
+.mk-textarea {
+    min-height: 112px;
+    padding: 12px 14px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.mk-input::placeholder,
+.mk-textarea::placeholder {
+    color: var(--mk-muted);
+    opacity: 0.75;
+}
+
+.mk-input:hover:not(:disabled),
+.mk-textarea:hover:not(:disabled) {
+    border-color: var(--mk-border-strong);
+}
+.mk-input:focus,
+.mk-textarea:focus,
+.mk-input.is-focus,
+.mk-textarea.is-focus {
+    outline: none;
+    border-color: var(--mk-primary);
+    box-shadow: 0 0 0 3px var(--mk-focus-halo);
+}
+.mk-input:disabled,
+.mk-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--mk-surface-2);
+}
+
+.mk-helper {
+    font-family: var(--mk-font-ui);
+    font-size: 12.5px;
+    color: var(--mk-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 16px;
+}
+.mk-helper svg {
+    flex: none;
+}
+
+/* error / success */
+.mk-field.is-error .mk-input,
+.mk-field.is-error .mk-textarea,
+.mk-field.is-error .mk-select-trigger {
+    border-color: var(--mk-danger);
+}
+.mk-field.is-error .mk-input:focus,
+.mk-field.is-error .mk-textarea:focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mk-danger) 16%, transparent);
+}
+.mk-field.is-error .mk-helper {
+    color: var(--mk-danger);
+    font-weight: 500;
+}
+.mk-field.is-success .mk-input,
+.mk-field.is-success .mk-textarea,
+.mk-field.is-success .mk-select-trigger {
+    border-color: var(--mk-success);
+}
+.mk-field.is-success .mk-helper {
+    color: var(--mk-success);
+    font-weight: 500;
+}
+
+/* character count */
+.mk-helper .mk-count {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   MOSAIK SELECT — custom dropdown (single + multi)
+   ============================================================ */
+.mk-select {
+    position: relative;
+}
+
+.mk-select-trigger {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 4px 40px 4px 9px;
+    border: 1.5px solid var(--mk-border);
+    background: var(--mk-field-bg);
+    color: var(--mk-text);
+    font-family: var(--mk-font-ui);
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.mk-select-trigger:hover:not(:disabled) {
+    border-color: var(--mk-border-strong);
+}
+.mk-select-trigger:focus-visible,
+.mk-select.open .mk-select-trigger {
+    outline: none;
+    border-color: var(--mk-primary);
+    box-shadow: 0 0 0 3px var(--mk-focus-halo);
+}
+.mk-select-trigger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--mk-surface-2);
+}
+
+.mk-select-value {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding-left: 5px;
+}
+.mk-select-value.placeholder {
+    color: var(--mk-muted);
+    opacity: 0.75;
+}
+
+.mk-select .mk-chev {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--mk-muted);
+    display: flex;
+    transition:
+        transform 0.2s cubic-bezier(0.65, 0, 0.35, 1),
+        color 0.15s ease;
+}
+.mk-select.open .mk-chev {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--mk-primary);
+}
+
+/* menu */
+.mk-select-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+    box-sizing: border-box;
+    background: var(--mk-field-bg);
+    border: 1.5px solid var(--mk-border);
+    border-radius: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
+    box-shadow: 0 16px 40px -12px rgba(11, 13, 38, 0.28);
+    padding: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.98);
+    transform-origin: top center;
+    transition:
+        opacity 0.18s cubic-bezier(0.65, 0, 0.35, 1),
+        transform 0.18s cubic-bezier(0.65, 0, 0.35, 1),
+        visibility 0s linear 0.18s;
+}
+.mk-select.open .mk-select-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+}
+.dark .mk-select-menu {
+    background: var(--mk-surface);
+    border-color: var(--mk-border-strong);
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+}
+
+/* options */
+.mk-select-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 38px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-family: var(--mk-font-ui);
+    font-size: 14.5px;
+    color: var(--mk-text);
+    border-radius: calc(var(--mk-c1) * 0.55) calc(var(--mk-c2) * 0.7)
+        calc(var(--mk-c1) * 0.55) calc(var(--mk-c2) * 0.7);
+    transition: background-color 0.12s ease;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.mk-select-option:hover,
+.mk-select-option.focused {
+    background: var(--mk-tonal);
+}
+.mk-select-option.is-disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+.mk-select-option.is-disabled:hover {
+    background: transparent;
+}
+
+/* single: triangle marker on the selection */
+.mk-select:not(.multi) .mk-select-option.selected {
+    color: var(--mk-primary);
+    font-weight: 600;
+}
+.dark .mk-select:not(.multi) .mk-select-option.selected {
+    color: var(--mk-tonal-text);
+}
+.mk-select-option .mk-opt-marker {
+    margin-left: auto;
+}
+
+/* multi: checkbox in the Mosaik corner motif */
+.mk-select.multi .mk-select-option::before {
+    content: "";
+    flex: none;
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--mk-border-strong);
+    background: var(--mk-field-bg);
+    border-radius: calc(var(--mk-c1) * 0.35) calc(var(--mk-c2) * 0.5)
+        calc(var(--mk-c1) * 0.35) calc(var(--mk-c2) * 0.5);
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+.mk-select.multi .mk-select-option.selected::before {
+    background: var(--mk-primary);
+    border-color: var(--mk-primary);
+}
+.mk-select.multi .mk-select-option::after {
+    content: "";
+    position: absolute;
+    left: 18.5px;
+    top: 50%;
+    width: 4.5px;
+    height: 9px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-62%) rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.mk-select.multi .mk-select-option.selected::after {
+    opacity: 1;
+}
+
+/* chips in the trigger (multi) */
+.mk-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 10px;
+    background: var(--mk-tonal);
+    color: var(--mk-tonal-text);
+    font-family: var(--mk-font-ui);
+    font-size: 12.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: calc(var(--mk-c1) * 0.45) calc(var(--mk-c2) * 0.6)
+        calc(var(--mk-c1) * 0.45) calc(var(--mk-c2) * 0.6);
+}
+.mk-chip.more {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--mk-border);
+    color: var(--mk-muted);
+}
+
+/* ============================================================
+   TOGGLE SWITCH
+   ============================================================ */
+.mk-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-family: var(--mk-font-ui);
+    font-size: 14.5px;
+    color: var(--mk-text);
+    -webkit-user-select: none;
+    user-select: none;
+}
+.mk-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.mk-switch .mk-track {
+    position: relative;
+    flex: none;
+    width: 48px;
+    height: 27px;
+    box-sizing: border-box;
+    background: var(--mk-surface-2);
+    border: 1.5px solid var(--mk-border-strong);
+    border-radius: calc(var(--mk-c1) * 0.72) calc(var(--mk-c2) * 1.2)
+        calc(var(--mk-c1) * 0.72) calc(var(--mk-c2) * 1.2);
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+.mk-switch .mk-thumb {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    background: var(--mk-surface);
+    border: 1.5px solid var(--mk-border-strong);
+    box-sizing: border-box;
+    border-radius: calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.9)
+        calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.9);
+    transition:
+        left 0.18s cubic-bezier(0.5, 0.1, 0.3, 1.2),
+        border-radius 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+.dark .mk-switch .mk-thumb {
+    background: #c9cdf6;
+    border-color: #c9cdf6;
+}
+.mk-switch input:checked + .mk-track {
+    background: var(--mk-primary);
+    border-color: var(--mk-primary);
+}
+.mk-switch input:checked + .mk-track .mk-thumb {
+    left: 24px;
+    background: #ffffff;
+    border-color: #ffffff;
+}
+.mk-switch input:focus-visible + .mk-track {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: 2px;
+}
+.mk-switch input:disabled + .mk-track,
+.mk-switch input:disabled ~ .mk-switch-label {
+    opacity: 0.42;
+}
+.mk-switch:has(input:disabled) {
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   CHECKBOX & RADIO
+   ============================================================ */
+.mk-checkbox,
+.mk-radio {
+    position: relative;
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-family: var(--mk-font-ui);
+    font-size: 14.5px;
+    color: var(--mk-text);
+    -webkit-user-select: none;
+    user-select: none;
+}
+.mk-checkbox input,
+.mk-radio input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.mk-checkbox-box,
+.mk-radio-ring {
+    position: relative;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--mk-border-strong);
+    background: var(--mk-field-bg);
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
+}
+.mk-checkbox-box {
+    border-radius: calc(var(--mk-c1) * 0.4) calc(var(--mk-c2) * 0.55)
+        calc(var(--mk-c1) * 0.4) calc(var(--mk-c2) * 0.55);
+}
+.mk-checkbox-box::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2.5px;
+    width: 4.5px;
+    height: 9.5px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
+.mk-checkbox:hover input:not(:disabled) + .mk-checkbox-box,
+.mk-radio:hover input:not(:disabled) + .mk-radio-ring {
+    border-color: var(--mk-primary);
+}
+.mk-checkbox input:checked + .mk-checkbox-box,
+.mk-checkbox input:indeterminate + .mk-checkbox-box {
+    background: var(--mk-primary);
+    border-color: var(--mk-primary);
+}
+.mk-checkbox input:checked + .mk-checkbox-box::after,
+.mk-checkbox input:indeterminate + .mk-checkbox-box::after {
+    opacity: 1;
+}
+.mk-checkbox input:indeterminate + .mk-checkbox-box::after {
+    left: 4.5px;
+    top: 8px;
+    width: 8px;
+    height: 0;
+    border-width: 0 0 2px 0;
+    transform: none;
+}
+.mk-checkbox input:focus-visible + .mk-checkbox-box,
+.mk-radio input:focus-visible + .mk-radio-ring {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: 2px;
+}
+.mk-checkbox input:disabled + .mk-checkbox-box,
+.mk-checkbox input:disabled ~ .mk-checkbox-label,
+.mk-radio input:disabled + .mk-radio-ring,
+.mk-radio input:disabled ~ .mk-radio-label {
+    opacity: 0.42;
+}
+.mk-checkbox:has(input:disabled),
+.mk-radio:has(input:disabled) {
+    cursor: not-allowed;
+}
+.mk-checkbox-label,
+.mk-radio-label {
+    line-height: 1.45;
+}
+.mk-checkbox-helper,
+.mk-radio-helper {
+    display: block;
+    font-size: 12.5px;
+    color: var(--mk-muted);
+    margin-top: 1px;
+}
+
+.mk-radio-ring {
+    border-radius: 50%;
+    transition: border-color 0.15s ease;
+}
+.mk-radio-ring::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    background: var(--mk-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+    transition:
+        transform 0.16s cubic-bezier(0.5, 0.1, 0.3, 1.3),
+        opacity 0.12s ease;
+}
+.mk-radio input:checked + .mk-radio-ring {
+    border-color: var(--mk-primary);
+}
+.mk-radio input:checked + .mk-radio-ring::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* ============================================================
+   BADGES & TAGS
+   ============================================================ */
+.mk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    padding: 0 10px;
+    font-family: var(--mk-font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border-radius: calc(var(--mk-c1) * 0.4) calc(var(--mk-c2) * 0.55)
+        calc(var(--mk-c1) * 0.4) calc(var(--mk-c2) * 0.55);
+}
+.mk-badge svg {
+    display: block;
+    flex: none;
+}
+.mk-badge-success {
+    background: color-mix(in srgb, var(--mk-success) 13%, var(--mk-field-bg));
+    color: var(--mk-success);
+}
+.mk-badge-neutral {
+    background: var(--mk-surface-2);
+    color: var(--mk-muted);
+}
+.mk-badge-info {
+    background: var(--mk-tonal);
+    color: var(--mk-tonal-text);
+}
+.mk-badge-featured {
+    background: color-mix(in srgb, var(--mk-secondary) 16%, var(--mk-field-bg));
+    color: #d6473c;
+}
+.dark .mk-badge-featured {
+    color: #ff8278;
+}
+.mk-badge-danger {
+    background: color-mix(in srgb, var(--mk-danger) 12%, var(--mk-field-bg));
+    color: var(--mk-danger);
+}
+
+.mk-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 6px 0 12px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--mk-border);
+    background: var(--mk-field-bg);
+    color: var(--mk-text);
+    font-family: var(--mk-font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.65)
+        calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.65);
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease,
+        color 0.15s ease,
+        opacity 0.15s ease;
+}
+.mk-tag.is-active {
+    border-color: var(--mk-primary);
+    color: var(--mk-tonal-text);
+    background: color-mix(in srgb, var(--mk-primary) 8%, var(--mk-field-bg));
+}
+.mk-tag.no-x {
+    padding-right: 12px;
+}
+.mk-tag-x {
+    -webkit-appearance: none;
+    appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--mk-muted);
+    cursor: pointer;
+    border-radius: calc(var(--mk-c1) * 0.25) calc(var(--mk-c2) * 0.35)
+        calc(var(--mk-c1) * 0.25) calc(var(--mk-c2) * 0.35);
+    transition:
+        background-color 0.12s ease,
+        color 0.12s ease;
+}
+.mk-tag-x:hover {
+    background: var(--mk-surface-2);
+    color: var(--mk-text);
+}
+.mk-tag-x svg {
+    display: block;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.mk-card {
+    box-sizing: border-box;
+    background: var(--mk-surface);
+    border: 1.5px solid var(--mk-border);
+    border-radius: calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1)
+        calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1);
+    padding: 18px;
+    display: grid;
+    gap: 12px;
+    transition:
+        transform 0.18s cubic-bezier(0.65, 0, 0.35, 1),
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+.mk-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mk-shadow-card);
+    border-color: var(--mk-border-strong);
+}
+.mk-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.mk-card-icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mk-tonal);
+    color: var(--mk-tonal-text);
+    border-radius: calc(var(--mk-c1) * 0.55) calc(var(--mk-c2) * 0.7)
+        calc(var(--mk-c1) * 0.55) calc(var(--mk-c2) * 0.7);
+}
+.mk-card-icon.coral {
+    background: color-mix(in srgb, var(--mk-secondary) 16%, var(--mk-field-bg));
+    color: #d6473c;
+}
+.dark .mk-card-icon.coral {
+    color: #ff8278;
+}
+.mk-card-id {
+    min-width: 0;
+}
+.mk-card-title {
+    font-family: var(--mk-font-display);
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--mk-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mk-card-author {
+    font-family: var(--mk-font-ui);
+    font-size: 12.5px;
+    color: var(--mk-muted);
+    margin-top: 2px;
+}
+.mk-card-desc {
+    margin: 0;
+    font-family: var(--mk-font-ui);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--mk-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.mk-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.mk-card-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+}
+.mk-card-row .mk-card-icon {
+    width: 38px;
+    height: 38px;
+}
+.mk-card-row .mk-card-id {
+    flex: 1;
+}
+.mk-card-row .mk-card-foot {
+    justify-content: flex-end;
+}
+
+/* ============================================================
+   PANEL — specimen / surface container
+   ============================================================ */
+.mk-panel {
+    padding: 32px 36px 40px;
+    border-radius: calc(var(--mk-c1) * 1.5) calc(var(--mk-c2) * 1.5)
+        calc(var(--mk-c1) * 1.5) calc(var(--mk-c2) * 1.5);
+    background: #fbfbfe;
+    border: 1px solid #d7daee;
+    color: var(--mk-text);
+}
+.dark .mk-panel {
+    background: var(--mk-bg);
+    border-color: var(--mk-border);
+}

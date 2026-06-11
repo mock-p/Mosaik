@@ -1,0 +1,35 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Mosaik/Introduction" />
+
+# Mosaik
+
+Mosaik is the UI library foundation for Mocka.
+
+Its shape language is built on two project shapes: the **square with two opposite rounded
+corners** and the **triangle with two rounded corners and one sharp tip**. The triangle does
+functional work — select chevron, loading spinner, helper-text markers.
+
+## Tokens
+
+- Corners: 16px rounded pair / 4px sharp pair (`--mk-c1` / `--mk-c2`), axis flippable via `data-mk-corner="trbl"`
+- Colors: primary `#3746E6`, secondary `#FF6E64`, cool blue-tinted neutrals, light + dark (`.dark`)
+- Type: Parkinsans (display, buttons, labels) / DM Sans (UI)
+
+## Components
+
+- `Button` — 6 variants (primary, secondary, tonal, outline, ghost, danger), 3 sizes,
+  icon / icon-only / loading, radial sphere fill on hover
+- `TextField` — label, hint, helper, error / success states
+- `Textarea` — same field anatomy + character count
+- `Select` — custom dropdown, single + multi with chips, keyboard navigation
+- `Switch` — toggle with the Mosaik corner motif
+- `Triangle` — the shared triangle glyph
+
+See **Mosaik / All components** for the full specimen sheet.
+
+## Future scope
+
+- Checkboxes / radios, cards, badges
+- Mocka module usage examples
+- Website usage examples

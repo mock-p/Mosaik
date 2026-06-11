@@ -1,0 +1,115 @@
+/* ============================================================
+   Mosaik · theme tokens
+   Shape language: square w/ two opposite rounded corners,
+   triangle w/ two rounded corners (sharp tip).
+   ============================================================ */
+
+:root {
+    /* shape tokens */
+    --mk-r-big: 16px;
+    --mk-r-small: 4px;
+    --mk-c1: var(--mk-r-big); /* rounded pair */
+    --mk-c2: var(--mk-r-small); /* sharp pair   */
+
+    /* type */
+    --mk-font-display: "Parkinsans", sans-serif;
+    --mk-font-ui: "DM Sans", sans-serif;
+    --mk-font-btn: var(--mk-font-display);
+
+    /* light theme */
+    --mk-bg: #f3f4fb;
+    --mk-page: #e8eaf4;
+    --mk-surface: #ffffff;
+    --mk-surface-2: #ebedf8;
+    --mk-text: #13153f;
+    --mk-muted: #5c608b;
+    --mk-border: #d7daee;
+    --mk-border-strong: #afb4d9;
+
+    --mk-primary: #3746e6;
+    --mk-primary-hover: #2b38c9;
+    --mk-primary-active: #2129a6;
+    --mk-on-primary: #ffffff;
+
+    --mk-tonal: #e7e9fc;
+    --mk-tonal-hover: #daddfa;
+    --mk-tonal-text: #2b38c9;
+
+    --mk-secondary: #ff6e64;
+    --mk-secondary-hover: #f95a4f;
+    --mk-on-secondary: #34100c;
+
+    --mk-danger: #c9281d;
+    --mk-danger-hover: #ad1f15;
+    --mk-success: #14855a;
+
+    --mk-field-bg: #ffffff;
+    --mk-focus-halo: color-mix(in srgb, var(--mk-primary) 16%, transparent);
+    --mk-shadow-card:
+        0 1px 2px rgba(19, 21, 63, 0.05),
+        0 12px 28px -14px rgba(19, 21, 63, 0.22);
+}
+
+/* flip the corner axis (TL·BR ↔ TR·BL) on any subtree */
+[data-mk-corner="trbl"] {
+    --mk-c1: var(--mk-r-small);
+    --mk-c2: var(--mk-r-big);
+}
+
+.dark {
+    --mk-bg: #0b0d26;
+    --mk-page: #0b0d26;
+    --mk-surface: #14163a;
+    --mk-surface-2: #1d2050;
+    --mk-text: #eeeffb;
+    --mk-muted: #9ca0ce;
+    --mk-border: #2e3266;
+    --mk-border-strong: #4a4f94;
+
+    --mk-primary: #4654ee;
+    --mk-primary-hover: #5d6af5;
+    --mk-primary-active: #3746e6;
+    --mk-on-primary: #ffffff;
+
+    --mk-tonal: #23275f;
+    --mk-tonal-hover: #2b3072;
+    --mk-tonal-text: #b2b8ff;
+
+    --mk-secondary: #ff6e64;
+    --mk-secondary-hover: #ff8278;
+    --mk-on-secondary: #2c0d09;
+
+    --mk-danger: #f0493c;
+    --mk-danger-hover: #ff6e64;
+    --mk-success: #36c58d;
+
+    --mk-field-bg: #101233;
+    --mk-focus-halo: color-mix(
+        in srgb,
+        var(--mk-primary-hover) 28%,
+        transparent
+    );
+    --mk-shadow-card:
+        0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -14px rgba(0, 0, 0, 0.6);
+}
+
+/* expose tokens as Tailwind utilities (bg-mk-primary, text-mk-muted, font-mk-display…) */
+@theme inline {
+    --color-mk-bg: var(--mk-bg);
+    --color-mk-surface: var(--mk-surface);
+    --color-mk-surface-2: var(--mk-surface-2);
+    --color-mk-text: var(--mk-text);
+    --color-mk-muted: var(--mk-muted);
+    --color-mk-border: var(--mk-border);
+    --color-mk-border-strong: var(--mk-border-strong);
+    --color-mk-primary: var(--mk-primary);
+    --color-mk-on-primary: var(--mk-on-primary);
+    --color-mk-tonal: var(--mk-tonal);
+    --color-mk-tonal-text: var(--mk-tonal-text);
+    --color-mk-secondary: var(--mk-secondary);
+    --color-mk-on-secondary: var(--mk-on-secondary);
+    --color-mk-danger: var(--mk-danger);
+    --color-mk-success: var(--mk-success);
+    --font-mk-display: var(--mk-font-display);
+    --font-mk-ui: var(--mk-font-ui);
+}
