@@ -4,12 +4,18 @@ import "../src/styles.css";
 
 const withMosaikTheme: Decorator = (Story, context) => {
   const dark = context.globals.theme === "dark";
+  const docs = context.viewMode === "docs";
+
   return (
     <div
       className={dark ? "dark" : undefined}
       style={{
-        minHeight: "100vh",
-        padding: 48,
+        minHeight: docs ? undefined : "100vh",
+        width: docs ? "fit-content" : undefined,
+        maxWidth: docs ? "100%" : undefined,
+        display: docs ? "inline-flex" : undefined,
+        alignItems: docs ? "flex-start" : undefined,
+        padding: docs ? 24 : 48,
         background: "var(--mk-page)",
         color: "var(--mk-text)",
         fontFamily: "var(--mk-font-ui)",

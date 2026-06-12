@@ -6,7 +6,12 @@ import { Card } from "./card";
 
 const PlusIcon = (
   <svg width="16" height="16" viewBox="0 0 14 14" aria-hidden="true">
-    <path d="M7 2.5v9M2.5 7h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="M7 2.5v9M2.5 7h9"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -17,11 +22,16 @@ const meta: Meta<typeof Card> = {
   args: {
     title: "Auto-tagger",
     author: "par Lena K.",
-    description: "Classe automatiquement vos pages Notion avec des tags générés à partir du contenu.",
+    description:
+      "Classe automatiquement vos pages Notion avec des tags générés à partir du contenu.",
     icon: <Triangle size={18} />,
     iconTone: "primary",
     badge: <Badge variant="success">Published</Badge>,
-    action: <Button variant="tonal" size="sm">Install</Button>,
+    action: (
+      <Button variant="tonal" size="sm">
+        Install
+      </Button>
+    ),
     row: false,
   },
   argTypes: {
@@ -34,17 +44,27 @@ const meta: Meta<typeof Card> = {
     badge: { control: false },
     action: { control: false },
   },
-  decorators: [(Story) => <div style={{ maxWidth: 560 }}><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: 560 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const PluginCards: Story = {
   render: (args) => (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 16 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: 16,
+      }}
+    >
       <Card {...args} />
       <Card
         {...args}
@@ -54,7 +74,11 @@ export const PluginCards: Story = {
         icon={<Triangle size={18} direction="right" />}
         iconTone="coral"
         badge={<Badge variant="info">Beta</Badge>}
-        action={<Button variant="primary" size="sm">Install</Button>}
+        action={
+          <Button variant="primary" size="sm">
+            Install
+          </Button>
+        }
       />
     </div>
   ),
@@ -68,6 +92,10 @@ export const Row: Story = {
     description: undefined,
     icon: PlusIcon,
     badge: <Badge variant="neutral">Draft</Badge>,
-    action: <Button variant="ghost" size="sm">Edit</Button>,
+    action: (
+      <Button variant="ghost" size="sm">
+        Edit
+      </Button>
+    ),
   },
 };

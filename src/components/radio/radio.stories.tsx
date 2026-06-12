@@ -23,15 +23,29 @@ const meta: Meta<typeof Radio> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const Group: Story = {
   render: (args) => (
     <div style={{ display: "grid", gap: 14, justifyItems: "start" }}>
       <Radio {...args} name="pricing" label="Free" defaultChecked={false} />
-      <Radio {...args} name="pricing" label="One-time purchase" defaultChecked />
-      <Radio {...args} name="pricing" label="Subscription" defaultChecked={false} />
-      <Radio {...args} name="pricing" label="Enterprise (soon)" disabled defaultChecked={false} />
+      <Radio
+        {...args}
+        name="pricing"
+        label="One-time purchase"
+        defaultChecked
+      />
+      <Radio
+        {...args}
+        name="pricing"
+        label="Subscription"
+        defaultChecked={false}
+      />
+      <Radio
+        {...args}
+        name="pricing"
+        label="Enterprise (soon)"
+        disabled
+        defaultChecked={false}
+      />
     </div>
   ),
 };

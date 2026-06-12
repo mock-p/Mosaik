@@ -21,8 +21,6 @@ const meta: Meta<typeof Switch> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const Checked: Story = {
   args: { label: "Auto-update", defaultChecked: true },
 };

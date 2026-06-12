@@ -14,6 +14,7 @@ const meta: Meta<typeof Tag> = {
     children: { control: "text" },
     active: { control: "boolean" },
     removable: { control: "boolean" },
+    removeLabel: { control: "text" },
     onRemove: { control: false },
   },
 };
@@ -21,15 +22,17 @@ const meta: Meta<typeof Tag> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const Variants: Story = {
   render: (args) => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
       <Tag {...args}>notion</Tag>
       <Tag {...args}>automation</Tag>
-      <Tag {...args} active>productivity</Tag>
-      <Tag {...args} removable={false}>v2.4.1</Tag>
+      <Tag {...args} active>
+        productivity
+      </Tag>
+      <Tag {...args} removable={false}>
+        v2.4.1
+      </Tag>
     </div>
   ),
 };

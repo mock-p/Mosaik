@@ -11,15 +11,22 @@ const meta: Meta<typeof Triangle> = {
   },
   argTypes: {
     size: { control: { type: "range", min: 8, max: 128, step: 1 } },
-    direction: { control: "inline-radio", options: ["up", "right", "down", "left"] },
+    direction: {
+      control: "inline-radio",
+      options: ["up", "right", "down", "left"],
+    },
   },
-  decorators: [(Story) => <div style={{ color: "var(--mk-primary)" }}><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div style={{ color: "var(--mk-primary)" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-export const Playground: Story = {};
 
 export const Directions: Story = {
   render: (args) => (
@@ -34,5 +41,11 @@ export const Directions: Story = {
 
 export const Secondary: Story = {
   args: { size: 48 },
-  decorators: [(Story) => <div style={{ color: "var(--mk-secondary)" }}><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div style={{ color: "var(--mk-secondary)" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };

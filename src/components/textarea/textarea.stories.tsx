@@ -33,13 +33,17 @@ const meta: Meta<typeof Textarea> = {
     disabled: { control: "boolean" },
     rows: { control: { type: "number", min: 2, max: 12 } },
   },
-  decorators: [(Story) => <div style={{ maxWidth: 520 }}><Story /></div>],
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: 520 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-export const Playground: Story = {};
 
 export const Error: Story = {
   args: {

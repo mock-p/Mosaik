@@ -13,23 +13,43 @@ functional work — select chevron, loading spinner, helper-text markers.
 ## Tokens
 
 - Corners: 16px rounded pair / 4px sharp pair (`--mk-c1` / `--mk-c2`), axis flippable via `data-mk-corner="trbl"`
-- Colors: primary `#3746E6`, secondary `#FF6E64`, cool blue-tinted neutrals, light + dark (`.dark`)
+- Colors: primary `#3746E6`, secondary `#FF6E64`, semantic success / warning / danger, cool blue-tinted neutrals, light + dark (`.dark`)
 - Type: Parkinsans (display, buttons, labels) / DM Sans (UI)
+- Shadows: `--mk-shadow-card` / `--mk-shadow-menu` / `--mk-shadow-modal`; inverse tooltip surface `--mk-tooltip-bg` / `--mk-tooltip-text`
 
 ## Components
 
-- `Button` — 6 variants (primary, secondary, tonal, outline, ghost, danger), 3 sizes,
-  icon / icon-only / loading, radial sphere fill on hover
-- `TextField` — label, hint, helper, error / success states
-- `Textarea` — same field anatomy + character count
-- `Select` — custom dropdown, single + multi with chips, keyboard navigation
-- `Switch` — toggle with the Mosaik corner motif
-- `Triangle` — the shared triangle glyph
+**Forms** — `Button` (6 variants, 3 sizes, icon / loading, radial sphere fill),
+`TextField`, `Textarea`, `Select` (single + multi avec chips), `Checkbox`, `Radio`, `Switch`
+
+**Display** — `Badge`, `Tag`, `Card` (+ variante liste), `Triangle`
+
+**Containers** — `Modal` (structure « technique » : barre méta, détails monospace, pied note + actions),
+`FloatingLayer` (tooltip / popover unifié, surface inverse, 4 directions, pointeur triangle)
+
+**Feedback** — `Alert` (4 sémantiques), `Toast` + `ToastZone` + `useToasts`
+(3 animations d'entrée : glissement, rebond, dépliage)
+
+**Navigation** — `Tabs` (encre élastique 2 phases), `SegmentedControl` (pastille glissante + overshoot),
+`ActionMenu` (kebab, raccourcis ⌘, items danger), `Breadcrumb` (séparateurs triangle), `Pagination`
+
+**Data** — `Avatar` + `AvatarStack` (3 tailles, 3 tons, statut, "+N"), `Table` (tri triangle,
+sélection checkbox + tout sélectionner), `Progress` (déterminée / indéterminée) + `Spinner` triangle,
+`Skeleton` (shimmer), `EmptyState` (illustration deux formes)
+
+**Contrôles avancés** — `Slider` (thumb carré Mosaik, valeur live), `Stepper` numérique borné,
+recherche via `TextField` `iconStart` / `iconEnd` (loupe + `Kbd` ⌘K), `Accordion` (triangle rotatif),
+`Dropzone` + `FileItem`, `Wizard`
+
+**Surfaces** — `Banner` (brand / warning), `CodeBlock` (copie, numéros de ligne) + `InlineCode`,
+`Drawer` (panneau latéral animé), `CommandPalette` (filtre live, navigation clavier)
+
+Motion tokens : `--mk-ease-standard` · `--mk-ease-out` · `--mk-ease-overshoot`.
 
 See **Mosaik / All components** for the full specimen sheet.
 
 ## Future scope
 
-- Checkboxes / radios, cards, badges
-- Mocka module usage examples
-- Website usage examples
+- Set d'icônes formalisé
+- Page de handoff dev
+- Mocka module / website usage examples

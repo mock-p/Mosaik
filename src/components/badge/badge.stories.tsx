@@ -23,16 +23,24 @@ const meta: Meta<typeof Badge> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const Variants: Story = {
   render: (args) => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-      <Badge {...args} variant="success">Published</Badge>
-      <Badge {...args} variant="neutral">Draft</Badge>
-      <Badge {...args} variant="info">Beta</Badge>
-      <Badge {...args} variant="featured" icon={<Triangle size={9} />}>Featured</Badge>
-      <Badge {...args} variant="danger">Deprecated</Badge>
+      <Badge {...args} variant="success">
+        Published
+      </Badge>
+      <Badge {...args} variant="neutral">
+        Draft
+      </Badge>
+      <Badge {...args} variant="info">
+        Beta
+      </Badge>
+      <Badge {...args} variant="featured" icon={<Triangle size={9} />}>
+        Featured
+      </Badge>
+      <Badge {...args} variant="danger">
+        Deprecated
+      </Badge>
     </div>
   ),
 };

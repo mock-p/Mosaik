@@ -25,16 +25,35 @@ const meta: Meta<typeof Checkbox> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Playground: Story = {};
-
 export const States: Story = {
   render: (args) => (
     <div style={{ display: "grid", gap: 14, justifyItems: "start" }}>
       <Checkbox {...args} label="Email notifications" helper={undefined} />
-      <Checkbox {...args} label="Auto-publish updates" defaultChecked helper={undefined} />
-      <Checkbox {...args} label="All permissions" indeterminate helper={undefined} />
-      <Checkbox {...args} label="Marketplace listing" defaultChecked helper="Visible to all users in the gallery." />
-      <Checkbox {...args} label="Required scope" defaultChecked disabled helper={undefined} />
+      <Checkbox
+        {...args}
+        label="Auto-publish updates"
+        defaultChecked
+        helper={undefined}
+      />
+      <Checkbox
+        {...args}
+        label="All permissions"
+        indeterminate
+        helper={undefined}
+      />
+      <Checkbox
+        {...args}
+        label="Marketplace listing"
+        defaultChecked
+        helper="Visible to all users in the gallery."
+      />
+      <Checkbox
+        {...args}
+        label="Required scope"
+        defaultChecked
+        disabled
+        helper={undefined}
+      />
     </div>
   ),
 };

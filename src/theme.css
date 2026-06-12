@@ -16,6 +16,11 @@
     --mk-font-ui: "DM Sans", sans-serif;
     --mk-font-btn: var(--mk-font-display);
 
+    /* motion */
+    --mk-ease-standard: cubic-bezier(0.65, 0, 0.35, 1);
+    --mk-ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
+    --mk-ease-overshoot: cubic-bezier(0.3, 0.9, 0.35, 1.08);
+
     /* light theme */
     --mk-bg: #f3f4fb;
     --mk-page: #e8eaf4;
@@ -42,12 +47,17 @@
     --mk-danger: #c9281d;
     --mk-danger-hover: #ad1f15;
     --mk-success: #14855a;
+    --mk-warning: #a96a04;
 
     --mk-field-bg: #ffffff;
     --mk-focus-halo: color-mix(in srgb, var(--mk-primary) 16%, transparent);
     --mk-shadow-card:
         0 1px 2px rgba(19, 21, 63, 0.05),
         0 12px 28px -14px rgba(19, 21, 63, 0.22);
+    --mk-shadow-menu: 0 16px 40px -12px rgba(11, 13, 38, 0.28);
+    --mk-shadow-modal: 0 24px 64px -16px rgba(11, 13, 38, 0.42);
+    --mk-tooltip-bg: #13153f;
+    --mk-tooltip-text: #f3f4fb;
 }
 
 /* flip the corner axis (TL·BR ↔ TR·BL) on any subtree */
@@ -82,6 +92,7 @@
     --mk-danger: #f0493c;
     --mk-danger-hover: #ff6e64;
     --mk-success: #36c58d;
+    --mk-warning: #efb45a;
 
     --mk-field-bg: #101233;
     --mk-focus-halo: color-mix(
@@ -91,6 +102,10 @@
     );
     --mk-shadow-card:
         0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -14px rgba(0, 0, 0, 0.6);
+    --mk-shadow-menu: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+    --mk-shadow-modal: 0 24px 72px -12px rgba(0, 0, 0, 0.7);
+    --mk-tooltip-bg: #eeeffb;
+    --mk-tooltip-text: #13153f;
 }
 
 /* expose tokens as Tailwind utilities (bg-mk-primary, text-mk-muted, font-mk-display…) */
@@ -110,6 +125,7 @@
     --color-mk-on-secondary: var(--mk-on-secondary);
     --color-mk-danger: var(--mk-danger);
     --color-mk-success: var(--mk-success);
+    --color-mk-warning: var(--mk-warning);
     --font-mk-display: var(--mk-font-display);
     --font-mk-ui: var(--mk-font-ui);
 }
