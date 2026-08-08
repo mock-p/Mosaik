@@ -16,6 +16,38 @@
     --mk-font-ui: "DM Sans", sans-serif;
     --mk-font-btn: var(--mk-font-display);
 
+    /* spacing */
+    --mk-space-1: 0.25rem;
+    --mk-space-2: 0.5rem;
+    --mk-space-3: 0.75rem;
+    --mk-space-4: 1rem;
+    --mk-space-5: 1.5rem;
+    --mk-space-6: 2rem;
+    --mk-space-7: 3rem;
+    --mk-space-8: 4rem;
+    --mk-space-9: 6rem;
+
+    /* layout */
+    --mk-container-sm: 40rem;
+    --mk-container-md: 50rem;
+    --mk-container-lg: 65rem;
+    --mk-container-xl: 75rem;
+    --mk-page-gutter: clamp(1rem, 4vw, 2rem);
+
+    /* type scale */
+    --mk-text-xs: 0.75rem;
+    --mk-text-sm: 0.875rem;
+    --mk-text-md: 1rem;
+    --mk-text-lg: 1.125rem;
+    --mk-text-xl: 1.5rem;
+    --mk-text-2xl: 2rem;
+    --mk-text-display: clamp(2.5rem, 7vw, 5.5rem);
+
+    /* stacking */
+    --mk-z-dropdown: 30;
+    --mk-z-overlay: 80;
+    --mk-z-toast: 90;
+
     /* motion */
     --mk-ease-standard: cubic-bezier(0.65, 0, 0.35, 1);
     --mk-ease-out: cubic-bezier(0.2, 0.8, 0.3, 1);
@@ -128,4 +160,13 @@
     --color-mk-warning: var(--mk-warning);
     --font-mk-display: var(--mk-font-display);
     --font-mk-ui: var(--mk-font-ui);
+    --spacing-mk-1: var(--mk-space-1);
+    --spacing-mk-2: var(--mk-space-2);
+    --spacing-mk-3: var(--mk-space-3);
+    --spacing-mk-4: var(--mk-space-4);
+    --spacing-mk-5: var(--mk-space-5);
+    --spacing-mk-6: var(--mk-space-6);
+    --spacing-mk-7: var(--mk-space-7);
+    --spacing-mk-8: var(--mk-space-8);
+    --spacing-mk-9: var(--mk-space-9);
 }

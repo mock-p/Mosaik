@@ -41,6 +41,7 @@ const CrossIcon = (
 const ITEMS: ActionMenuEntry[] = [
   { label: "Run", icon: <Triangle size={12} direction="right" />, kbd: "⌘R" },
   { label: "Duplicate", icon: CopyIcon, kbd: "⌘D" },
+  { label: "Archive", disabled: true },
   "separator",
   { label: "Delete", icon: CrossIcon, danger: true },
 ];

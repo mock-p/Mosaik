@@ -26,8 +26,12 @@ export interface SelectProps {
   helper?: React.ReactNode;
   status?: FieldStatus;
   id?: string;
+  name?: string;
+  required?: boolean;
   className?: string;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
 }
 
 function toArray(value: string | string[] | undefined): string[] {
@@ -58,12 +62,20 @@ export function Select({
   helper,
   status,
   id,
+  name,
+  required = false,
   className,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  "aria-describedby": ariaDescribedBy,
 }: SelectProps) {
   const items = React.useMemo(() => options.map(normalize), [options]);
   const autoId = React.useId();
   const triggerId = id ?? autoId;
+  const labelId = label != null ? `${triggerId}-label` : undefined;
+  const helperId = helper != null ? `${triggerId}-helper` : undefined;
+  const menuId = `${triggerId}-listbox`;
+  const describedBy = [ariaDescribedBy, helperId].filter(Boolean).join(" ") || undefined;
 
   const [open, setOpen] = React.useState(false);
   const [focusIdx, setFocusIdx] = React.useState(-1);
@@ -73,15 +85,29 @@ export function Select({
   const selected = value !== undefined ? toArray(value) : internal;
 
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const typeaheadRef = React.useRef("");
+  const typeaheadTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const close = React.useCallback(() => {
     setOpen(false);
     setFocusIdx(-1);
   }, []);
 
-  const openMenu = () => {
+  const openMenu = (edge?: "first" | "last") => {
     setOpen(true);
-    setFocusIdx(items.findIndex((o) => selected.includes(o.value)));
+    const enabled = items
+      .map((option, index) => (option.disabled ? -1 : index))
+      .filter((index) => index >= 0);
+    const selectedIndex = items.findIndex((option) => !option.disabled && selected.includes(option.value));
+    setFocusIdx(
+      edge === "first"
+        ? (enabled[0] ?? -1)
+        : edge === "last"
+          ? (enabled[enabled.length - 1] ?? -1)
+          : selectedIndex >= 0
+            ? selectedIndex
+            : (enabled[0] ?? -1),
+    );
   };
 
   React.useEffect(() => {
@@ -92,6 +118,8 @@ export function Select({
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, [open, close]);
+
+  React.useEffect(() => () => clearTimeout(typeaheadTimer.current), []);
 
   const choose = (option: SelectOption) => {
     if (option.disabled) return;
@@ -114,17 +142,43 @@ export function Select({
       .filter((i) => i >= 0);
     if (enabled.length === 0) return;
     const pos = enabled.indexOf(focusIdx);
-    const nextPos = Math.min(Math.max(pos + delta, 0), enabled.length - 1);
-    setFocusIdx(
-      enabled[pos === -1 && delta < 0 ? enabled.length - 1 : nextPos],
-    );
+    const start = pos < 0 ? (delta > 0 ? -1 : 0) : pos;
+    const nextPos = (start + delta + enabled.length) % enabled.length;
+    setFocusIdx(enabled[nextPos]);
+  };
+
+  const moveToEdge = (edge: "first" | "last") => {
+    const enabled = items
+      .map((option, index) => (option.disabled ? -1 : index))
+      .filter((index) => index >= 0);
+    setFocusIdx(edge === "first" ? (enabled[0] ?? -1) : (enabled[enabled.length - 1] ?? -1));
+  };
+
+  const typeahead = (key: string) => {
+    clearTimeout(typeaheadTimer.current);
+    typeaheadRef.current += key.toLocaleLowerCase();
+    typeaheadTimer.current = setTimeout(() => {
+      typeaheadRef.current = "";
+    }, 600);
+    const query = typeaheadRef.current;
+    const start = Math.max(focusIdx, -1);
+    for (let offset = 1; offset <= items.length; offset += 1) {
+      const index = (start + offset) % items.length;
+      const option = items[index];
+      const text = typeof option.label === "string" ? option.label : option.value;
+      if (!option.disabled && text.toLocaleLowerCase().startsWith(query)) {
+        if (!open) setOpen(true);
+        setFocusIdx(index);
+        return;
+      }
+    }
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       if (!open) {
-        openMenu();
+        openMenu(event.key === "ArrowUp" ? "last" : "first");
         return;
       }
       moveFocus(event.key === "ArrowDown" ? 1 : -1);
@@ -136,6 +190,12 @@ export function Select({
       close();
     } else if (event.key === "Tab") {
       close();
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      if (!open) openMenu(event.key === "Home" ? "first" : "last");
+      else moveToEdge(event.key === "Home" ? "first" : "last");
+    } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      typeahead(event.key);
     }
   };
 
@@ -172,6 +232,8 @@ export function Select({
       status={status}
       htmlFor={triggerId}
       labelAsDiv
+      labelId={labelId}
+      helperId={helperId}
       className={className}
     >
       <div
@@ -183,9 +245,17 @@ export function Select({
           id={triggerId}
           className="mk-select-trigger"
           disabled={disabled}
+          role="combobox"
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label={ariaLabel}
+          aria-labelledby={ariaLabel == null ? (ariaLabelledBy ?? labelId) : ariaLabelledBy}
+          aria-describedby={describedBy}
+          aria-controls={menuId}
+          aria-activedescendant={open && focusIdx >= 0 ? `${menuId}-option-${focusIdx}` : undefined}
+          aria-invalid={status === "error" || undefined}
+          aria-errormessage={status === "error" ? helperId : undefined}
+          aria-required={required || undefined}
           onClick={() => (open ? close() : openMenu())}
           onKeyDown={onKeyDown}
         >
@@ -207,8 +277,10 @@ export function Select({
           </span>
         </button>
         <div
+          id={menuId}
           className="mk-select-menu"
           role="listbox"
+          aria-labelledby={ariaLabel == null ? (ariaLabelledBy ?? labelId) : undefined}
           aria-multiselectable={multiple || undefined}
         >
           {items.map((option, i) => {
@@ -216,6 +288,7 @@ export function Select({
             return (
               <div
                 key={option.value}
+                id={`${menuId}-option-${i}`}
                 role="option"
                 aria-selected={isSelected}
                 aria-disabled={option.disabled || undefined}
@@ -242,6 +315,10 @@ export function Select({
             );
           })}
         </div>
+        {name != null &&
+          selected.map((selectedValue) => (
+            <input key={selectedValue} type="hidden" name={name} value={selectedValue} />
+          ))}
       </div>
     </FieldShell>
   );

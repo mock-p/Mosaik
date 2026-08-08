@@ -10,16 +10,14 @@ export interface ActionMenuItem {
   /** Keyboard shortcut hint, e.g. "⌘R". */
   kbd?: React.ReactNode;
   danger?: boolean;
+  disabled?: boolean;
   onSelect?: () => void;
 }
 
 export interface ActionMenuProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
   items: ActionMenuEntry[];
-  /**
-   * Custom trigger element — receives onClick / aria props.
-   * Defaults to the kebab ⋮ outline icon button.
-   */
+  /** Custom trigger element. Existing click and keyboard handlers are preserved. */
   trigger?: React.ReactElement;
   /** Panel edge aligned with the trigger. @default "right" */
   align?: "left" | "right";
@@ -34,11 +32,7 @@ const KebabIcon = (
   </svg>
 );
 
-/**
- * Action menu (kebab dropdown): Mosaik panel with the same opening
- * animation as the select, keyboard-shortcut hints, danger items.
- * Closes on item select, outside click and Escape.
- */
+/** Action menu with managed focus, arrow-key navigation and trigger restoration. */
 export function ActionMenu({
   items,
   trigger,
@@ -49,33 +43,100 @@ export function ActionMenu({
 }: ActionMenuProps) {
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLElement | null>(null);
+  const itemRefs = React.useRef(new Map<number, HTMLButtonElement>());
+  const initialFocus = React.useRef<"first" | "last">("first");
+  const menuId = React.useId();
+
+  const enabledIndexes = React.useMemo(
+    () =>
+      items
+        .map((item, index) => (item !== "separator" && !item.disabled ? index : -1))
+        .filter((index) => index >= 0),
+    [items],
+  );
+
+  const focusItem = React.useCallback((index: number) => {
+    itemRefs.current.get(index)?.focus();
+  }, []);
+
+  const close = React.useCallback((restoreFocus = false) => {
+    setOpen(false);
+    if (restoreFocus) {
+      requestAnimationFrame(() => {
+        if (triggerRef.current?.isConnected) triggerRef.current.focus();
+      });
+    }
+  }, []);
 
   React.useEffect(() => {
     if (!open) return;
-    const onDocClick = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    const frame = requestAnimationFrame(() => {
+      const target =
+        initialFocus.current === "last"
+          ? enabledIndexes[enabledIndexes.length - 1]
+          : enabledIndexes[0];
+      if (target != null) focusItem(target);
+    });
+    const onDocumentClick = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) close(false);
     };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("click", onDocClick);
-    document.addEventListener("keydown", onKey);
+    document.addEventListener("click", onDocumentClick);
     return () => {
-      document.removeEventListener("click", onDocClick);
-      document.removeEventListener("keydown", onKey);
+      cancelAnimationFrame(frame);
+      document.removeEventListener("click", onDocumentClick);
     };
-  }, [open]);
+  }, [open, enabledIndexes, focusItem, close]);
 
-  const triggerProps = {
-    onClick: () => setOpen((o) => !o),
-    "aria-haspopup": "menu" as const,
+  const moveFocus = (currentIndex: number, direction: 1 | -1 | "first" | "last") => {
+    if (enabledIndexes.length === 0) return;
+    let nextPosition: number;
+    if (direction === "first") nextPosition = 0;
+    else if (direction === "last") nextPosition = enabledIndexes.length - 1;
+    else {
+      const position = enabledIndexes.indexOf(currentIndex);
+      nextPosition = (Math.max(position, 0) + direction + enabledIndexes.length) % enabledIndexes.length;
+    }
+    focusItem(enabledIndexes[nextPosition]);
+  };
+
+  const openFromTrigger = (element: HTMLElement, last = false) => {
+    triggerRef.current = element;
+    initialFocus.current = last ? "last" : "first";
+    setOpen(true);
+  };
+
+  const originalTriggerProps = (trigger?.props ?? {}) as React.HTMLAttributes<HTMLElement>;
+  const triggerProps: React.HTMLAttributes<HTMLElement> = {
+    onClick: (event) => {
+      originalTriggerProps.onClick?.(event);
+      if (event.defaultPrevented) return;
+      triggerRef.current = event.currentTarget;
+      setOpen((current) => {
+        if (!current) initialFocus.current = "first";
+        return !current;
+      });
+    },
+    onKeyDown: (event) => {
+      originalTriggerProps.onKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        openFromTrigger(event.currentTarget, event.key === "ArrowUp");
+      }
+    },
+    "aria-haspopup": "menu",
     "aria-expanded": open,
+    "aria-controls": menuId,
   };
 
   return (
     <div ref={rootRef} className={cx("mk-menu", open && "open", className)} {...rest}>
       {trigger != null ? (
-        React.cloneElement(trigger, triggerProps)
+        React.cloneElement(
+          trigger as React.ReactElement<React.HTMLAttributes<HTMLElement>>,
+          triggerProps,
+        )
       ) : (
         <Button
           variant="outline"
@@ -83,21 +144,54 @@ export function ActionMenu({
           iconOnly
           icon={KebabIcon}
           aria-label={ariaLabel}
-          {...triggerProps}
+          {...(triggerProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
         />
       )}
-      <div className={cx("mk-menu-panel", align === "left" && "align-left")} role="menu">
-        {items.map((item, i) =>
+      <div
+        id={menuId}
+        className={cx("mk-menu-panel", align === "left" && "align-left")}
+        role="menu"
+        aria-hidden={!open || undefined}
+        onKeyDown={(event) => {
+          const currentIndex = Number((event.target as HTMLElement).dataset.menuIndex ?? -1);
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            moveFocus(currentIndex, 1);
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            moveFocus(currentIndex, -1);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            moveFocus(currentIndex, "first");
+          } else if (event.key === "End") {
+            event.preventDefault();
+            moveFocus(currentIndex, "last");
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            close(true);
+          } else if (event.key === "Tab") {
+            close(false);
+          }
+        }}
+      >
+        {items.map((item, index) =>
           item === "separator" ? (
-            <div key={`sep-${i}`} className="mk-menu-sep" />
+            <div key={`sep-${index}`} className="mk-menu-sep" role="separator" />
           ) : (
             <button
-              key={i}
+              key={index}
+              ref={(element) => {
+                if (element) itemRefs.current.set(index, element);
+                else itemRefs.current.delete(index);
+              }}
               type="button"
               role="menuitem"
+              data-menu-index={index}
+              disabled={item.disabled}
               className={cx("mk-menu-item", item.danger && "is-danger")}
               onClick={() => {
-                setOpen(false);
+                if (item.disabled) return;
+                close(true);
                 item.onSelect?.();
               }}
             >

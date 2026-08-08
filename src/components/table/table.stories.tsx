@@ -72,6 +72,8 @@ const meta: Meta<typeof Table> = {
   args: {
     columns: COLUMNS,
     rows: ROWS,
+    caption: "Installed plugins",
+    captionHidden: true,
     selectable: true,
     sortKey: "plugin",
     sortDirection: "desc",
@@ -85,6 +87,8 @@ const meta: Meta<typeof Table> = {
     selected: { control: false },
     onSort: { control: false },
     onSelectionChange: { control: false },
+    caption: { control: "text" },
+    captionHidden: { control: "boolean" },
   },
 };
 

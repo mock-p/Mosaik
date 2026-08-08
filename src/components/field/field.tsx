@@ -23,6 +23,9 @@ interface FieldShellInternalProps extends FieldShellProps {
   htmlFor?: string;
   /** Render the label as a `<div>` (for non-labelable controls). */
   labelAsDiv?: boolean;
+  /** Stable ids used by controls for aria-labelledby/aria-describedby. */
+  labelId?: string;
+  helperId?: string;
   children: React.ReactNode;
 }
 
@@ -38,6 +41,8 @@ export function FieldShell({
   status,
   htmlFor,
   labelAsDiv = false,
+  labelId,
+  helperId,
   className,
   children,
 }: FieldShellInternalProps) {
@@ -52,14 +57,18 @@ export function FieldShell({
       )}
     >
       {(label != null || labelHint != null) && (
-        <LabelTag className="mk-field-label" htmlFor={labelAsDiv ? undefined : htmlFor}>
+        <LabelTag
+          id={labelId}
+          className="mk-field-label"
+          htmlFor={labelAsDiv ? undefined : htmlFor}
+        >
           {label}
           {labelHint != null && <span className="mk-field-hint">{labelHint}</span>}
         </LabelTag>
       )}
       {children}
       {(helper != null || helperEnd != null) && (
-        <div className="mk-helper">
+        <div id={helperId} className="mk-helper">
           {status != null && <Triangle size={11} />}
           {helper}
           {helperEnd != null && <span className="mk-count">{helperEnd}</span>}

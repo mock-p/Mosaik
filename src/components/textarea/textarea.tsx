@@ -22,6 +22,9 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       maxLength,
       id,
       className,
+      value,
+      defaultValue,
+      "aria-describedby": ariaDescribedBy,
       onChange,
       ...rest
     },
@@ -30,9 +33,12 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     const autoId = React.useId();
     const textareaId = id ?? autoId;
     const [length, setLength] = React.useState(() => {
-      const initial = rest.value ?? rest.defaultValue ?? "";
+      const initial = value ?? defaultValue ?? "";
       return String(initial).length;
     });
+    const currentLength = value != null ? String(value).length : length;
+    const helperId = helper != null || (showCount && maxLength != null) ? `${textareaId}-helper` : undefined;
+    const describedBy = [ariaDescribedBy, helperId].filter(Boolean).join(" ") || undefined;
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setLength(event.target.value.length);
@@ -46,19 +52,24 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         helper={helper}
         helperEnd={
           showCount && maxLength != null
-            ? `${length} / ${maxLength}`
+            ? `${currentLength} / ${maxLength}`
             : undefined
         }
         status={status}
         htmlFor={textareaId}
+        helperId={helperId}
         className={className}
       >
         <textarea
           ref={ref}
           id={textareaId}
           maxLength={maxLength}
+          value={value}
+          defaultValue={defaultValue}
           className={cx("mk-textarea")}
           aria-invalid={status === "error" || undefined}
+          aria-describedby={describedBy}
+          aria-errormessage={status === "error" ? helperId : undefined}
           onChange={handleChange}
           {...rest}
         />

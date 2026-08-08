@@ -16,6 +16,7 @@ const meta: Meta<typeof Pagination> = {
     count: { control: { type: "number", min: 1 } },
     siblingCount: { control: { type: "number", min: 0, max: 3 } },
     onChange: { control: false },
+    getHref: { control: false },
   },
 };
 
@@ -30,4 +31,22 @@ function InteractiveDemo() {
 export const Interactive: Story = {
   parameters: { controls: { disable: true } },
   render: () => <InteractiveDemo />,
+};
+
+function LinkDemo() {
+  const [page, setPage] = React.useState(4);
+  return (
+    <Pagination
+      page={page}
+      count={18}
+      getHref={(nextPage) => `?page=${nextPage}`}
+      preventDefaultOnChange
+      onChange={setPage}
+    />
+  );
+}
+
+export const LinkMode: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <LinkDemo />,
 };

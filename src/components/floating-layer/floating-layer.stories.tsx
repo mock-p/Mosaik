@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "../button";
 import { Triangle } from "../triangle";
-import { FloatingButton, FloatingLayer } from "./floating-layer";
+import { FloatingButton, FloatingLayer, Tooltip as TooltipRoot } from "./floating-layer";
 
 const meta: Meta<typeof FloatingLayer> = {
   title: "Components/FloatingLayer",
@@ -29,6 +29,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Tooltip: Story = {};
+
+export const TooltipTrigger: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ padding: 80 }}>
+      <TooltipRoot content="Run this plugin" placement="top">
+        <Button
+          variant="outline"
+          iconOnly
+          icon={<Triangle size={13} direction="right" />}
+          aria-label="Run plugin"
+        />
+      </TooltipRoot>
+    </div>
+  ),
+};
 
 export const RichTooltip: Story = {
   args: {

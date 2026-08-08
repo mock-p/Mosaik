@@ -1,4 +1,7 @@
-export const mosaikVersion = "0.0.0";
+"use client";
+
+/** Mosaik 0.1 ships a client entrypoint so hook-based components are safe in Next App Router. */
+export const mosaikVersion = "0.1.0";
 
 export { ActionMenu } from "./components/action-menu";
 export type {
@@ -63,15 +66,35 @@ export type { DropzoneProps, FileItemProps } from "./components/dropzone";
 export { EmptyState } from "./components/empty-state";
 export type { EmptyStateProps } from "./components/empty-state";
 
-export { FloatingLayer, FloatingButton } from "./components/floating-layer";
+export { FloatingLayer, FloatingButton, Tooltip } from "./components/floating-layer";
 export type {
   FloatingLayerProps,
   FloatingButtonProps,
   FloatPlacement,
+  TooltipProps,
 } from "./components/floating-layer";
 
 export { Kbd } from "./components/kbd";
 export type { KbdProps } from "./components/kbd";
+
+export { Container, Section, Stack, Cluster, Grid, Surface, Divider } from "./components/layout";
+export type {
+  ContainerProps,
+  ContainerSize,
+  SectionProps,
+  SectionSpacing,
+  StackProps,
+  ClusterProps,
+  GridProps,
+  SurfaceProps,
+  SurfaceVariant,
+  SurfacePadding,
+  DividerProps,
+  LayoutGap,
+} from "./components/layout";
+
+export { LinkButton } from "./components/link-button";
+export type { LinkButtonProps } from "./components/link-button";
 
 export { Modal } from "./components/modal";
 export type { ModalProps, ModalVariant } from "./components/modal";
@@ -133,6 +156,17 @@ export type {
 
 export { Triangle } from "./components/triangle";
 export type { TriangleProps, TriangleDirection } from "./components/triangle";
+
+export { Heading, Text, Prose } from "./components/typography";
+export type {
+  HeadingProps,
+  HeadingLevel,
+  HeadingSize,
+  TextProps,
+  TextSize,
+  TextTone,
+  ProseProps,
+} from "./components/typography";
 
 export { Wizard } from "./components/wizard";
 export type { WizardProps, WizardStep } from "./components/wizard";

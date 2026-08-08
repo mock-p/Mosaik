@@ -66,7 +66,7 @@ const CONTENT: Record<ToastKind, { title: string; text: string }> = {
 };
 
 function ToastStage() {
-  const { toasts, push, dismiss } = useToasts();
+  const { toasts, push, dismiss, pause, resume } = useToasts();
   const [animation, setAnimation] = React.useState<ToastAnimation>("slide");
 
   return (
@@ -130,6 +130,8 @@ function ToastStage() {
               animation={animation}
               leaving={t.leaving}
               onDismiss={() => dismiss(t.id)}
+              onPause={() => pause(t.id)}
+              onResume={() => resume(t.id)}
             >
               {t.text}
             </Toast>
@@ -143,4 +145,17 @@ function ToastStage() {
 export const LiveStage: Story = {
   parameters: { controls: { disable: true } },
   render: () => <ToastStage />,
+};
+
+export const AssertiveAnnouncement: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ position: "relative", minHeight: 120 }}>
+      <ToastZone live="assertive" label="Publication alerts">
+        <Toast kind="error" title="Publication failed" duration={0}>
+          Manifest validation failed.
+        </Toast>
+      </ToastZone>
+    </div>
+  ),
 };

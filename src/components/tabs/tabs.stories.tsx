@@ -44,3 +44,24 @@ export const WithoutCounts: Story = {
     defaultValue: "editor",
   },
 };
+
+export const PanelsKeyboardAndDisabled: Story = {
+  args: {
+    "aria-label": "Plugin workspace",
+    items: [
+      {
+        value: "overview",
+        label: "Overview",
+        panel: "Overview content is programmatically associated with its tab.",
+      },
+      {
+        value: "logs",
+        label: "Logs",
+        count: 3,
+        panel: "Use Arrow keys, Home and End to move between enabled tabs.",
+      },
+      { value: "billing", label: "Billing", disabled: true, panel: "Unavailable" },
+    ],
+    defaultValue: "overview",
+  },
+};

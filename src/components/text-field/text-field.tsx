@@ -15,11 +15,24 @@ export interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputEleme
 
 export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
   function TextField(
-    { label, labelHint, helper, status, iconStart, iconEnd, id, className, ...rest },
+    {
+      label,
+      labelHint,
+      helper,
+      status,
+      iconStart,
+      iconEnd,
+      id,
+      className,
+      "aria-describedby": ariaDescribedBy,
+      ...rest
+    },
     ref,
   ) {
     const autoId = React.useId();
     const inputId = id ?? autoId;
+    const helperId = helper != null ? `${inputId}-helper` : undefined;
+    const describedBy = [ariaDescribedBy, helperId].filter(Boolean).join(" ") || undefined;
 
     const input = (
       <input
@@ -28,6 +41,8 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         type="text"
         className="mk-input"
         aria-invalid={status === "error" || undefined}
+        aria-describedby={describedBy}
+        aria-errormessage={status === "error" ? helperId : undefined}
         {...rest}
       />
     );
@@ -39,6 +54,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         helper={helper}
         status={status}
         htmlFor={inputId}
+        helperId={helperId}
         className={className}
       >
         {iconStart == null && iconEnd == null ? (

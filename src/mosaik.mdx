@@ -6,6 +6,10 @@ import { Meta } from "@storybook/blocks";
 
 Mosaik is the UI library foundation for Mocka.
 
+Version 0.1 exposes a public React 18/19 ESM package. Its root JavaScript entrypoint is a
+client boundary for Next.js App Router compatibility. Import `@mocka/mosaik/styles.css`
+once in the application root. The package does not load web fonts or ship a CSS reset.
+
 Its shape language is built on two project shapes: the **square with two opposite rounded
 corners** and the **triangle with two rounded corners and one sharp tip**. The triangle does
 functional work — select chevron, loading spinner, helper-text markers.
@@ -44,12 +48,25 @@ recherche via `TextField` `iconStart` / `iconEnd` (loupe + `Kbd` ⌘K), `Accordi
 **Surfaces** — `Banner` (brand / warning), `CodeBlock` (copie, numéros de ligne) + `InlineCode`,
 `Drawer` (panneau latéral animé), `CommandPalette` (filtre live, navigation clavier)
 
+**Layout & type** — `Container`, `Section`, `Stack`, `Cluster`, `Grid`, `Surface`, `Divider`,
+`Heading`, `Text`, `Prose`, plus `LinkButton` pour les navigations qui reprennent le langage
+visuel des boutons sans imbriquer un bouton dans un lien.
+
 Motion tokens : `--mk-ease-standard` · `--mk-ease-out` · `--mk-ease-overshoot`.
 
 See **Mosaik / All components** for the full specimen sheet.
 
+## CSS entrypoints
+
+- `@mocka/mosaik/styles.css` — tokens + composants
+- `@mocka/mosaik/tokens.css` — tokens seuls
+- `@mocka/mosaik/components.css` — styles composants seuls
+
+Les applications chargent ou auto-hébergent Parkinsans et DM Sans. `.dark` active la palette
+sombre; `data-mk-corner="trbl"` inverse l'axe des coins sur un sous-arbre.
+
 ## Future scope
 
 - Set d'icônes formalisé
-- Page de handoff dev
-- Mocka module / website usage examples
+- Entrées serveur plus granulaires afin de réduire la frontière client
+- Recettes website supplémentaires sans créer de composants métier rigides

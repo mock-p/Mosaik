@@ -1,6 +1,7 @@
-export { FloatingLayer, FloatingButton } from "./floating-layer";
+export { FloatingLayer, FloatingButton, Tooltip } from "./floating-layer";
 export type {
   FloatingLayerProps,
   FloatingButtonProps,
   FloatPlacement,
+  TooltipProps,
 } from "./floating-layer";

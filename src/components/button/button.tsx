@@ -66,7 +66,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         type={type}
-        disabled={disabled}
+        disabled={disabled || loading}
         aria-busy={loading || undefined}
         data-mk-corner={cornerAxis === "trbl" ? "trbl" : undefined}
         className={cx(

@@ -18,6 +18,7 @@ const ITEMS = [
   },
   {
     id: "advanced",
+    disabled: true,
     title: "Avancé",
     content:
       "Variables d'environnement, version du runtime, journalisation détaillée.",
@@ -37,6 +38,8 @@ const meta: Meta<typeof Accordion> = {
     defaultOpen: { control: "object" },
     open: { control: false },
     onToggle: { control: false },
+    multiple: { control: "boolean" },
+    collapsible: { control: "boolean" },
   },
   decorators: [
     (Story) => (
@@ -52,4 +55,12 @@ type Story = StoryObj<typeof meta>;
 
 export const AllClosed: Story = {
   args: { defaultOpen: [] },
+};
+
+export const SinglePanel: Story = {
+  args: {
+    multiple: false,
+    collapsible: false,
+    defaultOpen: ["permissions"],
+  },
 };

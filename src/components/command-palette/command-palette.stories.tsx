@@ -1,4 +1,6 @@
-import type { Meta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
+import * as React from "react";
+import { Button } from "../button";
 import { Triangle } from "../triangle";
 import { CheckGlyph } from "../../internal/glyphs";
 import { CommandPalette, type CommandGroup } from "./command-palette";
@@ -84,6 +86,8 @@ const meta: Meta<typeof CommandPalette> = {
   args: {
     groups: GROUPS,
     placeholder: "Que voulez-vous faire ?",
+    dialogLabel: "Command palette",
+    searchLabel: "Search commands",
   },
   argTypes: {
     placeholder: { control: "text" },
@@ -91,6 +95,9 @@ const meta: Meta<typeof CommandPalette> = {
     groups: { control: false },
     footer: { control: false },
     onClose: { control: false },
+    open: { control: "boolean" },
+    modal: { control: "boolean" },
+    portal: { control: "boolean" },
   },
   decorators: [
     (Story) => (
@@ -112,3 +119,39 @@ const meta: Meta<typeof CommandPalette> = {
 };
 
 export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Embedded: Story = {};
+
+function ModalDemo() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open command palette</Button>
+      <CommandPalette
+        groups={GROUPS}
+        open={open}
+        modal
+        closeOnSelect
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+}
+
+export const Modal: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <ModalDemo />,
+};
+
+export const DisabledAndEmptyStates: Story = {
+  args: {
+    groups: [
+      {
+        label: "Workspace",
+        items: [{ label: "Publish workspace", disabled: true, keywords: ["release"] }],
+      },
+    ],
+  },
+};

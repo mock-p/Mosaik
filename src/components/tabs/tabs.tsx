@@ -6,6 +6,9 @@ export interface TabItem {
   label: React.ReactNode;
   /** Counter chip next to the label. */
   count?: React.ReactNode;
+  disabled?: boolean;
+  /** Optional panel rendered with the correct tabpanel relationship. */
+  panel?: React.ReactNode;
 }
 
 export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
@@ -13,38 +16,38 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  /** Class applied to an optional rendered tab panel. */
+  panelClassName?: string;
 }
 
 const EASE_OUT = "cubic-bezier(.2, .8, .3, 1)";
 const EASE_IN = "cubic-bezier(.4, 0, .6, 1)";
 
-/**
- * Tabs with the elastic sliding ink: on change the indicator first
- * stretches to cover both tabs (~160ms), then contracts onto the
- * destination (~220ms).
- */
+/** Tabs with automatic keyboard activation and an optional associated panel. */
 export function Tabs({
   items,
   value,
   defaultValue,
   onChange,
+  panelClassName,
+  id,
   className,
   ...rest
 }: TabsProps) {
-  const [internal, setInternal] = React.useState(
-    () => defaultValue ?? items[0]?.value,
-  );
-  const active = value ?? internal;
+  const generatedId = React.useId();
+  const baseId = id ?? generatedId;
+  const firstEnabled = items.find((item) => !item.disabled)?.value;
+  const [internal, setInternal] = React.useState(() => defaultValue ?? firstEnabled);
+  const requestedActive = value ?? internal;
+  const active = items.some((item) => item.value === requestedActive && !item.disabled)
+    ? requestedActive
+    : firstEnabled;
 
   const rootRef = React.useRef<HTMLDivElement>(null);
   const inkRef = React.useRef<HTMLSpanElement>(null);
   const btnRefs = React.useRef(new Map<string, HTMLButtonElement>());
   const mounted = React.useRef(false);
-  const phaseTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-  // read by the mount-only resize/fonts effect so it never re-runs on
-  // selection change (a no-anim reposition there would kill the animation)
+  const phaseTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const activeRef = React.useRef(active);
   activeRef.current = active;
 
@@ -62,7 +65,7 @@ export function Tabs({
 
   React.useLayoutEffect(() => {
     const ink = inkRef.current;
-    const tab = btnRefs.current.get(active) ?? null;
+    const tab = active == null ? null : (btnRefs.current.get(active) ?? null);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!mounted.current || reduced || !ink || !tab) {
@@ -71,7 +74,6 @@ export function Tabs({
       return;
     }
 
-    // phase 1: stretch over old + new, phase 2: contract onto the new tab
     const oldL = ink.offsetLeft;
     const oldR = oldL + ink.offsetWidth;
     const newL = tab.offsetLeft;
@@ -90,7 +92,7 @@ export function Tabs({
 
   React.useEffect(() => {
     const reposition = () =>
-      placeInk(btnRefs.current.get(activeRef.current) ?? null, true);
+      placeInk(activeRef.current == null ? null : (btnRefs.current.get(activeRef.current) ?? null), true);
     let timer: ReturnType<typeof setTimeout>;
     const onResize = () => {
       clearTimeout(timer);
@@ -105,31 +107,94 @@ export function Tabs({
   }, [placeInk]);
 
   const select = (next: string) => {
-    if (next === active) return;
+    const item = items.find((candidate) => candidate.value === next);
+    if (item?.disabled || next === active) return;
     if (value === undefined) setInternal(next);
     onChange?.(next);
   };
 
+  const move = (current: string, direction: 1 | -1 | "first" | "last") => {
+    const enabled = items.filter((item) => !item.disabled);
+    if (enabled.length === 0) return;
+    const currentIndex = enabled.findIndex((item) => item.value === current);
+    let targetIndex: number;
+    if (direction === "first") targetIndex = 0;
+    else if (direction === "last") targetIndex = enabled.length - 1;
+    else targetIndex = (Math.max(currentIndex, 0) + direction + enabled.length) % enabled.length;
+    const target = enabled[targetIndex];
+    select(target.value);
+    btnRefs.current.get(target.value)?.focus();
+  };
+
+  const activeIndex = items.findIndex((item) => item.value === active);
+  const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined;
+  const tabList = (
+    <div
+      ref={rootRef}
+      id={baseId}
+      role="tablist"
+      aria-orientation="horizontal"
+      className={cx("mk-tabs", className)}
+      {...rest}
+    >
+      {items.map((item, index) => {
+        const selected = item.value === active;
+        const tabId = `${baseId}-tab-${index}`;
+        const panelId = `${baseId}-panel-${index}`;
+        return (
+          <button
+            key={item.value}
+            ref={(element) => {
+              if (element) btnRefs.current.set(item.value, element);
+              else btnRefs.current.delete(item.value);
+            }}
+            id={tabId}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            aria-controls={item.panel !== undefined ? panelId : undefined}
+            tabIndex={selected ? 0 : -1}
+            disabled={item.disabled}
+            className={cx("mk-tab", selected && "is-active")}
+            onClick={() => select(item.value)}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                move(item.value, 1);
+              } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                move(item.value, -1);
+              } else if (event.key === "Home") {
+                event.preventDefault();
+                move(item.value, "first");
+              } else if (event.key === "End") {
+                event.preventDefault();
+                move(item.value, "last");
+              }
+            }}
+          >
+            {item.label}
+            {item.count != null && <span className="count">{item.count}</span>}
+          </button>
+        );
+      })}
+      <span ref={inkRef} className="mk-tabs-ink" aria-hidden="true" />
+    </div>
+  );
+
+  if (activeItem?.panel === undefined) return tabList;
   return (
-    <div ref={rootRef} role="tablist" className={cx("mk-tabs", className)} {...rest}>
-      {items.map((item) => (
-        <button
-          key={item.value}
-          ref={(el) => {
-            if (el) btnRefs.current.set(item.value, el);
-            else btnRefs.current.delete(item.value);
-          }}
-          type="button"
-          role="tab"
-          aria-selected={item.value === active}
-          className={cx("mk-tab", item.value === active && "is-active")}
-          onClick={() => select(item.value)}
-        >
-          {item.label}
-          {item.count != null && <span className="count">{item.count}</span>}
-        </button>
-      ))}
-      <span ref={inkRef} className="mk-tabs-ink" />
+    <div className="mk-tabs-shell">
+      {tabList}
+      <div
+        id={`${baseId}-panel-${activeIndex}`}
+        role="tabpanel"
+        aria-labelledby={`${baseId}-tab-${activeIndex}`}
+        tabIndex={0}
+        className={cx("mk-tab-panel", panelClassName)}
+      >
+        {activeItem.panel}
+      </div>
     </div>
   );
 }
