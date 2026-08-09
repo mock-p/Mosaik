@@ -24,10 +24,20 @@ test("closed Select renders safely on the server without dangling popup ARIA", (
 test("mounted Select portals, handles keyboard and selection, tracks context, and closes outside", async () => {
   const window = new Window({ url: "https://mosaik.test" });
   const observed = [];
+  const mutationObservers = [];
+  const NativeMutationObserver = window.MutationObserver;
   class ResizeObserver {
     constructor(callback) { this.callback = callback; observed.push(this); }
     observe(element) { this.element = element; }
     disconnect() { this.disconnected = true; }
+  }
+  class MutationObserver {
+    constructor(callback) {
+      this.observer = new NativeMutationObserver(callback);
+      mutationObservers.push(this);
+    }
+    observe(target, options) { this.observer.observe(target, options); }
+    disconnect() { this.disconnected = true; this.observer.disconnect(); }
   }
   Object.assign(globalThis, {
     document: window.document,
@@ -36,7 +46,7 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
     IS_REACT_ACT_ENVIRONMENT: true,
     KeyboardEvent: window.KeyboardEvent,
     MouseEvent: window.MouseEvent,
-    MutationObserver: window.MutationObserver,
+    MutationObserver,
     Node: window.Node,
     ResizeObserver,
     window,
@@ -46,6 +56,7 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   host.className = "dark";
   host.dataset.mkCorner = "trbl";
   host.style.setProperty("--mk-primary", "#123456");
+  host.style.fontFamily = "InitialSans";
   document.body.append(host);
   const changes = [];
   const root = createRoot(host);
@@ -58,9 +69,14 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   });
 
   const trigger = host.querySelector("[role=combobox]");
-  trigger.getBoundingClientRect = () => ({ bottom: 144, left: 24, top: 100, width: 220 });
+  let triggerRect = { bottom: 144, left: 24, top: 100, width: 220 };
+  let rectCalls = 0;
+  trigger.getBoundingClientRect = () => { rectCalls += 1; return triggerRect; };
   await act(async () => {
-    trigger.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "c" }));
+    trigger.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+  });
+  await act(async () => {
+    trigger.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
   });
 
   const menu = document.body.querySelector("[role=listbox]");
@@ -72,27 +88,83 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   assert.equal(menu.parentElement.className, "dark");
   assert.equal(menu.parentElement.dataset.mkCorner, "trbl");
   assert.equal(menu.parentElement.style.getPropertyValue("--mk-primary"), "#123456");
+  assert.equal(menu.parentElement.style.fontFamily, "InitialSans");
   assert.equal(observed[0].element, trigger);
+  assert.equal(menu.style.top, "150px");
 
-  await act(async () => menu.querySelector("#client-select-listbox-option-2").click());
-  assert.deepEqual(changes, [["Charlie"]]);
-  assert.equal(document.body.querySelector("[role=listbox]"), null);
+  triggerRect = { bottom: 244, left: 30, top: 200, width: 240 };
+  await act(async () => observed[0].callback());
+  assert.equal(menu.style.top, "250px");
+  assert.equal(menu.style.left, "30px");
+  assert.equal(menu.style.width, "240px");
 
-  await act(async () => trigger.click());
+  triggerRect = { bottom: 344, left: 31, top: 300, width: 241 };
+  await act(async () => window.dispatchEvent(new window.Event("scroll")));
+  assert.equal(menu.style.top, "350px");
+  triggerRect = { bottom: 444, left: 32, top: 400, width: 242 };
+  await act(async () => window.dispatchEvent(new window.Event("resize")));
+  assert.equal(menu.style.top, "450px");
+
   host.classList.remove("dark");
   host.dataset.mkCorner = "tlbr";
   host.style.setProperty("--mk-primary", "#abcdef");
+  host.style.fontFamily = "UpdatedSans";
   await act(async () => await Promise.resolve());
   const refreshedWrapper = document.body.querySelector("[role=listbox]").parentElement;
   assert.equal(refreshedWrapper.className, "");
   assert.equal(refreshedWrapper.dataset.mkCorner, "tlbr");
   assert.equal(refreshedWrapper.style.getPropertyValue("--mk-primary"), "#abcdef");
+  assert.equal(refreshedWrapper.style.fontFamily, "UpdatedSans");
 
+  await act(async () => {
+    trigger.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "Enter" }));
+  });
+  assert.deepEqual(changes, [["Charlie"]]);
+  assert.equal(document.body.querySelector("[role=listbox]"), null);
+
+  await act(async () => trigger.click());
   await act(async () => document.body.dispatchEvent(new window.MouseEvent("click", { bubbles: true })));
   assert.equal(trigger.getAttribute("aria-expanded"), "false");
   assert.equal(trigger.hasAttribute("aria-controls"), false);
   assert.equal(document.body.querySelector("[role=listbox]"), null);
   assert.equal(observed.every((observer) => observer.disconnected), true);
+  assert.equal(mutationObservers.every((observer) => observer.disconnected), true);
+  const callsAfterClose = rectCalls;
+  await act(async () => {
+    window.dispatchEvent(new window.Event("scroll"));
+    window.dispatchEvent(new window.Event("resize"));
+  });
+  assert.equal(rectCalls, callsAfterClose, "window listeners are removed after close");
   await act(async () => root.unmount());
+
+  const multiHost = document.createElement("div");
+  document.body.append(multiHost);
+  const multiChanges = [];
+  const multiRoot = createRoot(multiHost);
+  await act(async () => {
+    multiRoot.render(React.createElement(Select, {
+      id: "multi-select",
+      multiple: true,
+      onChange: (value) => multiChanges.push(value),
+      options: ["Alpha", "Charlie"],
+    }));
+  });
+  const multiTrigger = multiHost.querySelector("[role=combobox]");
+  let multiRect = { bottom: 144, left: 40, top: 100, width: 200 };
+  multiTrigger.getBoundingClientRect = () => multiRect;
+  await act(async () => multiTrigger.click());
+  const multiMenu = document.body.querySelector("[role=listbox]");
+  await act(async () => multiMenu.querySelector("#multi-select-listbox-option-0").click());
+  assert.deepEqual(multiChanges, [["Alpha"]]);
+  assert.ok(document.body.querySelector("[role=listbox]"), "multi menu stays open after add");
+  multiRect = { bottom: 188, left: 40, top: 100, width: 200 };
+  await act(async () => observed.at(-1).callback());
+  assert.equal(multiMenu.style.top, "194px", "trigger resize repositions an open multi menu");
+  await act(async () => multiMenu.querySelector("#multi-select-listbox-option-0").click());
+  assert.deepEqual(multiChanges, [["Alpha"], []]);
+  assert.ok(document.body.querySelector("[role=listbox]"), "multi menu stays open after remove");
+  await act(async () => multiRoot.unmount());
+  assert.equal(observed.every((observer) => observer.disconnected), true);
+  assert.equal(mutationObservers.every((observer) => observer.disconnected), true);
   window.close();
 });
