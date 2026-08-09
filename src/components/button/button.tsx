@@ -16,7 +16,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style. @default "primary" */
   variant?: ButtonVariant;
-  /** Control height: 32 / 42 / 50px. @default "md" */
+  /** Control height: 32 / 44 / 50px. @default "md" */
   size?: ButtonSize;
   /** Shows the spinning triangle and disables interaction. */
   loading?: boolean;

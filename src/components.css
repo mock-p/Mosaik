@@ -207,7 +207,7 @@
         transform 0.08s ease,
         background-size 0.38s cubic-bezier(0.65, 0, 0.35, 1);
     /* md default */
-    height: 42px;
+    height: 44px;
     padding: 0 20px;
     font-size: 14.5px;
     letter-spacing: 0.01em;
@@ -331,7 +331,7 @@
 
 /* icon-only */
 .mk-btn-icon {
-    width: 42px;
+    width: 44px;
     padding: 0;
 }
 .mk-btn-icon.mk-btn-sm {
