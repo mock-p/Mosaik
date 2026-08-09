@@ -1,6 +1,10 @@
 import * as React from "react";
 import { cx } from "../../internal/cx";
-import { canActivateTab, createTabsInteractionController } from "./tabs-state.mjs";
+import {
+  canActivateTab,
+  createTabsInteractionController,
+  getTabRelationshipIds,
+} from "./tabs-state.mjs";
 
 export interface TabItem {
   value: string;
@@ -129,6 +133,9 @@ export function Tabs({
 
   const activeIndex = items.findIndex((item) => item.value === active);
   const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined;
+  const activeRelationship = activeItem
+    ? getTabRelationshipIds(baseId, activeIndex, activeItem)
+    : undefined;
   const tabList = (
     <div
       ref={rootRef}
@@ -140,8 +147,7 @@ export function Tabs({
     >
       {items.map((item, index) => {
         const selected = item.value === active;
-        const tabId = item.tabId ?? `${baseId}-tab-${index}`;
-        const panelId = `${baseId}-panel-${index}`;
+        const relationship = getTabRelationshipIds(baseId, index, item);
         return (
           <button
             key={item.value}
@@ -149,11 +155,11 @@ export function Tabs({
               if (element) btnRefs.current.set(item.value, element);
               else btnRefs.current.delete(item.value);
             }}
-            id={tabId}
+            id={relationship.tabId}
             type="button"
             role="tab"
             aria-selected={selected}
-            aria-controls={item.controls ?? (item.panel !== undefined ? panelId : undefined)}
+            aria-controls={relationship.controls}
             aria-disabled={item.disabled && item.focusableDisabled ? true : undefined}
             aria-describedby={item.describedBy}
             tabIndex={selected ? 0 : -1}
@@ -178,9 +184,9 @@ export function Tabs({
     <div className="mk-tabs-shell">
       {tabList}
       <div
-        id={`${baseId}-panel-${activeIndex}`}
+        id={activeRelationship?.panelId}
         role="tabpanel"
-        aria-labelledby={`${baseId}-tab-${activeIndex}`}
+        aria-labelledby={activeRelationship?.labelledBy}
         tabIndex={0}
         className={cx("mk-tab-panel", panelClassName)}
       >

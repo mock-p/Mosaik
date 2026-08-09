@@ -18,3 +18,8 @@ export declare function createTabsInteractionController(
   activate(value: string): void;
   keyDown(current: string, key: string): boolean;
 };
+export declare function getTabRelationshipIds(
+  baseId: string,
+  index: number,
+  item: TabsStateItem & { tabId?: string; controls?: string; panel?: unknown },
+): { tabId: string; panelId: string; controls?: string; labelledBy: string };

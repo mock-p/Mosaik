@@ -6,6 +6,7 @@ import {
   createTabsInteractionController,
   getNavigableTabs,
   getNextNavigableTab,
+  getTabRelationshipIds,
 } from "../src/components/tabs/tabs-state.mjs";
 
 const items = [
@@ -65,4 +66,20 @@ test("focusable-disabled tabs ignore click, Enter, and Space activation", () => 
 
   controller.activate("general");
   assert.deepEqual(selected, ["general"]);
+});
+
+test("custom tab IDs remain the label target for internally rendered panels", () => {
+  assert.deepEqual(
+    getTabRelationshipIds("settings-tabs", 2, {
+      value: "billing",
+      tabId: "billing-tab",
+      panel: "Billing panel",
+    }),
+    {
+      tabId: "billing-tab",
+      panelId: "settings-tabs-panel-2",
+      controls: "settings-tabs-panel-2",
+      labelledBy: "billing-tab",
+    },
+  );
 });

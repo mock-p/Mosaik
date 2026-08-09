@@ -50,3 +50,14 @@ export function createTabsInteractionController(items, { select, focus }) {
 
   return { activate, keyDown };
 }
+
+export function getTabRelationshipIds(baseId, index, item) {
+  const tabId = item.tabId ?? `${baseId}-tab-${index}`;
+  const panelId = `${baseId}-panel-${index}`;
+  return {
+    tabId,
+    panelId,
+    controls: item.controls ?? (item.panel !== undefined ? panelId : undefined),
+    labelledBy: tabId,
+  };
+}
