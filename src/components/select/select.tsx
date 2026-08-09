@@ -7,6 +7,18 @@ import {
   positionSelectMenu,
   type SelectMenuPosition,
 } from "./select-position.mjs";
+import {
+  captureSelectLayerContext,
+  isSelectEventInside,
+  selectAria,
+  watchSelectGeometry,
+  type SelectLayerContext,
+} from "./select-layer.mjs";
+import {
+  findTypeaheadIndex,
+  moveEnabledIndex,
+  toggleSelectValue,
+} from "./select-state.mjs";
 
 export interface SelectOption {
   value: string;
@@ -85,6 +97,7 @@ export function Select({
   const [open, setOpen] = React.useState(false);
   const [focusIdx, setFocusIdx] = React.useState(-1);
   const [menuPosition, setMenuPosition] = React.useState<SelectMenuPosition>();
+  const [layerContext, setLayerContext] = React.useState<SelectLayerContext>();
   const [internal, setInternal] = React.useState<string[]>(() =>
     toArray(defaultValue),
   );
@@ -122,7 +135,7 @@ export function Select({
     if (!open) return;
     const onDocClick = (event: MouseEvent) => {
       const target = event.target as Node;
-      if (!rootRef.current?.contains(target) && !menuRef.current?.contains(target)) close();
+      if (!isSelectEventInside(rootRef.current, menuRef.current, target)) close();
     };
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
@@ -135,43 +148,28 @@ export function Select({
     }
     const updateMenuPosition = () => {
       const trigger = triggerRef.current;
-      if (trigger) setMenuPosition(positionSelectMenu(trigger.getBoundingClientRect(), window.innerHeight));
+      if (trigger) {
+        setMenuPosition(positionSelectMenu(trigger.getBoundingClientRect(), window.innerHeight));
+        setLayerContext(captureSelectLayerContext(trigger, window.getComputedStyle));
+      }
     };
     updateMenuPosition();
-    window.addEventListener("scroll", updateMenuPosition, true);
-    window.addEventListener("resize", updateMenuPosition);
-    return () => {
-      window.removeEventListener("scroll", updateMenuPosition, true);
-      window.removeEventListener("resize", updateMenuPosition);
-    };
+    const ResizeObserverClass = typeof ResizeObserver === "undefined" ? undefined : ResizeObserver;
+    return watchSelectGeometry(window, triggerRef.current!, updateMenuPosition, ResizeObserverClass);
   }, [open]);
 
   React.useEffect(() => () => clearTimeout(typeaheadTimer.current), []);
 
   const choose = (option: SelectOption) => {
     if (option.disabled) return;
-    let next: string[];
-    if (multiple) {
-      next = selected.includes(option.value)
-        ? selected.filter((v) => v !== option.value)
-        : [...selected, option.value];
-    } else {
-      next = [option.value];
-      close();
-    }
+    const next = toggleSelectValue(selected, option.value, multiple);
+    if (!multiple) close();
     if (value === undefined) setInternal(next);
     onChange?.(next);
   };
 
   const moveFocus = (delta: number) => {
-    const enabled = items
-      .map((o, i) => (o.disabled ? -1 : i))
-      .filter((i) => i >= 0);
-    if (enabled.length === 0) return;
-    const pos = enabled.indexOf(focusIdx);
-    const start = pos < 0 ? (delta > 0 ? -1 : 0) : pos;
-    const nextPos = (start + delta + enabled.length) % enabled.length;
-    setFocusIdx(enabled[nextPos]);
+    setFocusIdx(moveEnabledIndex(items, focusIdx, delta));
   };
 
   const moveToEdge = (edge: "first" | "last") => {
@@ -188,17 +186,10 @@ export function Select({
       typeaheadRef.current = "";
     }, 600);
     const query = typeaheadRef.current;
-    const start = Math.max(focusIdx, -1);
-    for (let offset = 1; offset <= items.length; offset += 1) {
-      const index = (start + offset) % items.length;
-      const option = items[index];
-      const text = typeof option.label === "string" ? option.label : option.value;
-      if (!option.disabled && text.toLocaleLowerCase().startsWith(query)) {
-        if (!open) setOpen(true);
-        setFocusIdx(index);
-        return;
-      }
-    }
+    const index = findTypeaheadIndex(items, focusIdx, query);
+    if (index < 0) return;
+    if (!open) setOpen(true);
+    setFocusIdx(index);
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -228,6 +219,8 @@ export function Select({
 
   const selectedItems = items.filter((o) => selected.includes(o.value));
   const labelOf = (o: SelectOption) => o.label ?? o.value;
+  const menuMounted = open && menuPosition != null && layerContext != null;
+  const comboboxAria = selectAria(open, menuMounted, focusIdx, menuId);
 
   let valueContent: React.ReactNode;
   if (selectedItems.length === 0) {
@@ -275,12 +268,12 @@ export function Select({
           disabled={disabled}
           role="combobox"
           aria-haspopup="listbox"
-          aria-expanded={open}
+          aria-expanded={comboboxAria.expanded}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabel == null ? (ariaLabelledBy ?? labelId) : ariaLabelledBy}
           aria-describedby={describedBy}
-          aria-controls={menuId}
-          aria-activedescendant={open && focusIdx >= 0 ? `${menuId}-option-${focusIdx}` : undefined}
+          aria-controls={comboboxAria.controls}
+          aria-activedescendant={comboboxAria.activeDescendant}
           aria-invalid={status === "error" || undefined}
           aria-errormessage={status === "error" ? helperId : undefined}
           aria-required={required || undefined}
@@ -304,7 +297,11 @@ export function Select({
             </svg>
           </span>
         </button>
-        {open && menuPosition && createPortal(<div
+        {menuMounted && createPortal(<div
+          className={layerContext.className}
+          data-mk-corner={layerContext.cornerAxis}
+          style={layerContext.style as React.CSSProperties}
+        ><div
           ref={menuRef}
           id={menuId}
           className={cx("mk-select-menu", "open", multiple && "multi")}
@@ -350,7 +347,7 @@ export function Select({
               </div>
             );
           })}
-        </div>, document.body)}
+        </div></div>, document.body)}
         {name != null &&
           selected.map((selectedValue) => (
             <input key={selectedValue} type="hidden" name={name} value={selectedValue} />
