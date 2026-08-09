@@ -53,7 +53,10 @@ export function createTabsInteractionController(items, { select, focus }) {
 
 export function getTabRelationshipIds(baseId, index, item) {
   const tabId = item.tabId ?? `${baseId}-tab-${index}`;
-  const panelId = `${baseId}-panel-${index}`;
+  const generatedPanelId = `${baseId}-panel-${index}`;
+  const panelId = item.panel !== undefined && item.controls
+    ? item.controls
+    : generatedPanelId;
   return {
     tabId,
     panelId,

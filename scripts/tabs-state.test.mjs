@@ -82,4 +82,19 @@ test("custom tab IDs remain the label target for internally rendered panels", ()
       labelledBy: "billing-tab",
     },
   );
+
+  assert.deepEqual(
+    getTabRelationshipIds("settings-tabs", 2, {
+      value: "billing",
+      tabId: "billing-tab",
+      controls: "billing-panel",
+      panel: "Billing panel",
+    }),
+    {
+      tabId: "billing-tab",
+      panelId: "billing-panel",
+      controls: "billing-panel",
+      labelledBy: "billing-tab",
+    },
+  );
 });
