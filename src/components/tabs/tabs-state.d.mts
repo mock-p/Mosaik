@@ -11,3 +11,10 @@ export declare function getNextNavigableTab<T extends TabsStateItem>(
   current: string,
   direction: 1 | -1 | "first" | "last",
 ): T | undefined;
+export declare function createTabsInteractionController(
+  items: TabsStateItem[],
+  handlers: { select(value: string): void; focus(value: string): void },
+): {
+  activate(value: string): void;
+  keyDown(current: string, key: string): boolean;
+};

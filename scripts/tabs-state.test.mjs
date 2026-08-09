@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   canActivateTab,
+  createTabsInteractionController,
   getNavigableTabs,
   getNextNavigableTab,
 } from "../src/components/tabs/tabs-state.mjs";
@@ -30,4 +31,38 @@ test("disabled tabs never activate even when they are focusable", () => {
   assert.equal(canActivateTab(items[0]), true);
   assert.equal(canActivateTab(items[1]), false);
   assert.equal(canActivateTab(items[2]), false);
+});
+
+test("tabs interaction routes Arrow, Home, and End focus with automatic activation only for enabled tabs", () => {
+  const selected = [];
+  const focused = [];
+  const controller = createTabsInteractionController(items, {
+    select: (value) => selected.push(value),
+    focus: (value) => focused.push(value),
+  });
+
+  assert.equal(controller.keyDown("general", "ArrowRight"), true);
+  assert.deepEqual(focused, ["files"]);
+  assert.deepEqual(selected, []);
+
+  controller.keyDown("files", "End");
+  controller.keyDown("settings", "Home");
+  assert.deepEqual(focused, ["files", "settings", "general"]);
+  assert.deepEqual(selected, ["settings", "general"]);
+});
+
+test("focusable-disabled tabs ignore click, Enter, and Space activation", () => {
+  const selected = [];
+  const controller = createTabsInteractionController(items, {
+    select: (value) => selected.push(value),
+    focus() {},
+  });
+
+  controller.activate("files");
+  assert.equal(controller.keyDown("files", "Enter"), true);
+  assert.equal(controller.keyDown("files", " "), true);
+  assert.deepEqual(selected, []);
+
+  controller.activate("general");
+  assert.deepEqual(selected, ["general"]);
 });

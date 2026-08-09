@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cx } from "../../internal/cx";
-import { canActivateTab, getNextNavigableTab } from "./tabs-state.mjs";
+import { canActivateTab, createTabsInteractionController } from "./tabs-state.mjs";
 
 export interface TabItem {
   value: string;
@@ -12,6 +12,10 @@ export interface TabItem {
   focusableDisabled?: boolean;
   /** ID of contextual content describing this tab. */
   describedBy?: string;
+  /** Explicit tab button ID, useful when a panel is rendered externally. */
+  tabId?: string;
+  /** Explicit ID of the panel controlled by this tab. */
+  controls?: string;
   /** Optional panel rendered with the correct tabpanel relationship. */
   panel?: React.ReactNode;
 }
@@ -118,12 +122,10 @@ export function Tabs({
     onChange?.(next);
   };
 
-  const move = (current: string, direction: 1 | -1 | "first" | "last") => {
-    const target = getNextNavigableTab(items, current, direction);
-    if (!target) return;
-    if (canActivateTab(target)) select(target.value);
-    btnRefs.current.get(target.value)?.focus();
-  };
+  const interaction = createTabsInteractionController(items, {
+    select,
+    focus: (next) => btnRefs.current.get(next)?.focus(),
+  });
 
   const activeIndex = items.findIndex((item) => item.value === active);
   const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined;
@@ -138,7 +140,7 @@ export function Tabs({
     >
       {items.map((item, index) => {
         const selected = item.value === active;
-        const tabId = `${baseId}-tab-${index}`;
+        const tabId = item.tabId ?? `${baseId}-tab-${index}`;
         const panelId = `${baseId}-panel-${index}`;
         return (
           <button
@@ -151,27 +153,15 @@ export function Tabs({
             type="button"
             role="tab"
             aria-selected={selected}
-            aria-controls={item.panel !== undefined ? panelId : undefined}
+            aria-controls={item.controls ?? (item.panel !== undefined ? panelId : undefined)}
             aria-disabled={item.disabled && item.focusableDisabled ? true : undefined}
             aria-describedby={item.describedBy}
             tabIndex={selected ? 0 : -1}
             disabled={item.disabled && !item.focusableDisabled}
             className={cx("mk-tab", selected && "is-active")}
-            onClick={() => select(item.value)}
+            onClick={() => interaction.activate(item.value)}
             onKeyDown={(event) => {
-              if (event.key === "ArrowRight") {
-                event.preventDefault();
-                move(item.value, 1);
-              } else if (event.key === "ArrowLeft") {
-                event.preventDefault();
-                move(item.value, -1);
-              } else if (event.key === "Home") {
-                event.preventDefault();
-                move(item.value, "first");
-              } else if (event.key === "End") {
-                event.preventDefault();
-                move(item.value, "last");
-              }
+              if (interaction.keyDown(item.value, event.key)) event.preventDefault();
             }}
           >
             {item.label}
