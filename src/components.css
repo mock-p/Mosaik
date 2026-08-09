@@ -583,11 +583,8 @@
 
 /* menu */
 .mk-select-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
-    z-index: 30;
+    position: fixed;
+    z-index: 10000;
     box-sizing: border-box;
     background: var(--mk-field-bg);
     border: 1.5px solid var(--mk-border);
@@ -605,7 +602,8 @@
         transform 0.18s cubic-bezier(0.65, 0, 0.35, 1),
         visibility 0s linear 0.18s;
 }
-.mk-select.open .mk-select-menu {
+.mk-select.open .mk-select-menu,
+.mk-select-menu.open {
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -648,7 +646,8 @@
 }
 
 /* single: triangle marker on the selection */
-.mk-select:not(.multi) .mk-select-option.selected {
+.mk-select:not(.multi) .mk-select-option.selected,
+.mk-select-menu:not(.multi) .mk-select-option.selected {
     color: var(--mk-primary);
     font-weight: 600;
 }
@@ -660,7 +659,8 @@
 }
 
 /* multi: checkbox in the Mosaik corner motif */
-.mk-select.multi .mk-select-option::before {
+.mk-select.multi .mk-select-option::before,
+.mk-select-menu.multi .mk-select-option::before {
     content: "";
     flex: none;
     width: 18px;
@@ -674,11 +674,13 @@
         background-color 0.15s ease,
         border-color 0.15s ease;
 }
-.mk-select.multi .mk-select-option.selected::before {
+.mk-select.multi .mk-select-option.selected::before,
+.mk-select-menu.multi .mk-select-option.selected::before {
     background: var(--mk-primary);
     border-color: var(--mk-primary);
 }
-.mk-select.multi .mk-select-option::after {
+.mk-select.multi .mk-select-option::after,
+.mk-select-menu.multi .mk-select-option::after {
     content: "";
     position: absolute;
     left: 18.5px;
@@ -691,7 +693,8 @@
     opacity: 0;
     transition: opacity 0.15s ease;
 }
-.mk-select.multi .mk-select-option.selected::after {
+.mk-select.multi .mk-select-option.selected::after,
+.mk-select-menu.multi .mk-select-option.selected::after {
     opacity: 1;
 }
 

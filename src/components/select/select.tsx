@@ -1,7 +1,12 @@
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { cx } from "../../internal/cx";
 import { FieldShell, type FieldStatus } from "../field";
 import { Triangle } from "../triangle";
+import {
+  positionSelectMenu,
+  type SelectMenuPosition,
+} from "./select-position.mjs";
 
 export interface SelectOption {
   value: string;
@@ -79,12 +84,15 @@ export function Select({
 
   const [open, setOpen] = React.useState(false);
   const [focusIdx, setFocusIdx] = React.useState(-1);
+  const [menuPosition, setMenuPosition] = React.useState<SelectMenuPosition>();
   const [internal, setInternal] = React.useState<string[]>(() =>
     toArray(defaultValue),
   );
   const selected = value !== undefined ? toArray(value) : internal;
 
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
   const typeaheadRef = React.useRef("");
   const typeaheadTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -113,11 +121,30 @@ export function Select({
   React.useEffect(() => {
     if (!open) return;
     const onDocClick = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) close();
+      const target = event.target as Node;
+      if (!rootRef.current?.contains(target) && !menuRef.current?.contains(target)) close();
     };
     document.addEventListener("click", onDocClick);
     return () => document.removeEventListener("click", onDocClick);
   }, [open, close]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setMenuPosition(undefined);
+      return;
+    }
+    const updateMenuPosition = () => {
+      const trigger = triggerRef.current;
+      if (trigger) setMenuPosition(positionSelectMenu(trigger.getBoundingClientRect(), window.innerHeight));
+    };
+    updateMenuPosition();
+    window.addEventListener("scroll", updateMenuPosition, true);
+    window.addEventListener("resize", updateMenuPosition);
+    return () => {
+      window.removeEventListener("scroll", updateMenuPosition, true);
+      window.removeEventListener("resize", updateMenuPosition);
+    };
+  }, [open]);
 
   React.useEffect(() => () => clearTimeout(typeaheadTimer.current), []);
 
@@ -241,6 +268,7 @@ export function Select({
         className={cx("mk-select", multiple && "multi", open && "open")}
       >
         <button
+          ref={triggerRef}
           type="button"
           id={triggerId}
           className="mk-select-trigger"
@@ -276,10 +304,18 @@ export function Select({
             </svg>
           </span>
         </button>
-        <div
+        {open && menuPosition && createPortal(<div
+          ref={menuRef}
           id={menuId}
-          className="mk-select-menu"
+          className={cx("mk-select-menu", "open", multiple && "multi")}
           role="listbox"
+          style={{
+            bottom: menuPosition.bottom,
+            left: menuPosition.left,
+            maxHeight: menuPosition.maxHeight,
+            top: menuPosition.top,
+            width: menuPosition.width,
+          }}
           aria-labelledby={ariaLabel == null ? (ariaLabelledBy ?? labelId) : undefined}
           aria-multiselectable={multiple || undefined}
         >
@@ -314,7 +350,7 @@ export function Select({
               </div>
             );
           })}
-        </div>
+        </div>, document.body)}
         {name != null &&
           selected.map((selectedValue) => (
             <input key={selectedValue} type="hidden" name={name} value={selectedValue} />
