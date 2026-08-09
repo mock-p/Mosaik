@@ -1,6 +1,14 @@
 export function captureSelectLayerContext(trigger, readComputedStyle) {
   const computed = readComputedStyle(trigger);
   const style = { fontFamily: computed.fontFamily };
+  const ancestors = [];
+  for (let element = trigger; element; element = element.parentElement) ancestors.unshift(element);
+  for (const element of ancestors) {
+    for (let index = 0; index < (element.style?.length ?? 0); index += 1) {
+      const name = element.style.item(index);
+      if (name.startsWith("--mk-")) style[name] = element.style.getPropertyValue(name);
+    }
+  }
   for (let index = 0; index < computed.length; index += 1) {
     const name = typeof computed.item === "function" ? computed.item(index) : computed[index];
     if (name?.startsWith("--mk-")) style[name] = computed.getPropertyValue(name);
@@ -35,4 +43,14 @@ export function watchSelectGeometry(target, trigger, update, ResizeObserverClass
     target.removeEventListener("resize", update);
     observer?.disconnect();
   };
+}
+
+export function watchSelectContext(root, update, MutationObserverClass) {
+  const observer = new MutationObserverClass(update);
+  observer.observe(root, {
+    attributeFilter: ["class", "data-mk-corner", "style"],
+    attributes: true,
+    subtree: true,
+  });
+  return () => observer.disconnect();
 }

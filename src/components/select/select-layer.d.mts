@@ -20,3 +20,8 @@ export function watchSelectGeometry(
   update: () => void,
   ResizeObserverClass?: typeof ResizeObserver,
 ): () => void;
+export function watchSelectContext(
+  root: Node,
+  update: () => void,
+  MutationObserverClass: typeof MutationObserver,
+): () => void;

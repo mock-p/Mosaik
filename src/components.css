@@ -651,7 +651,8 @@
     color: var(--mk-primary);
     font-weight: 600;
 }
-.dark .mk-select:not(.multi) .mk-select-option.selected {
+.dark .mk-select:not(.multi) .mk-select-option.selected,
+.dark .mk-select-menu:not(.multi) .mk-select-option.selected {
     color: var(--mk-tonal-text);
 }
 .mk-select-option .mk-opt-marker {

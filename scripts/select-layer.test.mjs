@@ -1,16 +1,20 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { readFileSync } from "node:fs";
 import {
   captureSelectLayerContext,
   isSelectEventInside,
   selectAria,
   watchSelectGeometry,
+  watchSelectContext,
 } from "../src/components/select/select-layer.mjs";
 import {
   findTypeaheadIndex,
   moveEnabledIndex,
   toggleSelectValue,
 } from "../src/components/select/select-state.mjs";
+
+const css = readFileSync(new URL("../src/components.css", import.meta.url), "utf8");
 
 test("captures dark, corner-axis, custom tokens, and computed font for a body portal", () => {
   const dark = {};
@@ -70,6 +74,32 @@ test("geometry watcher reacts to scroll, resize, and observed trigger changes, t
     ["remove", "resize", update],
     ["disconnect"],
   ]);
+});
+
+test("context watcher resyncs live theme attributes and cleans up", () => {
+  const calls = [];
+  class Observer {
+    constructor(callback) { calls.push(["observer", callback]); }
+    observe(target, options) { calls.push(["observe", target, options]); }
+    disconnect() { calls.push(["disconnect"]); }
+  }
+  const root = {};
+  const update = () => {};
+  const cleanup = watchSelectContext(root, update, Observer);
+  assert.deepEqual(calls, [
+    ["observer", update],
+    ["observe", root, {
+      attributeFilter: ["class", "data-mk-corner", "style"],
+      attributes: true,
+      subtree: true,
+    }],
+  ]);
+  cleanup();
+  assert.deepEqual(calls.at(-1), ["disconnect"]);
+});
+
+test("dark selected single styling matches inline and body-portaled menus", () => {
+  assert.match(css, /\.dark \.mk-select:not\(\.multi\) \.mk-select-option\.selected\s*,\s*\.dark \.mk-select-menu:not\(\.multi\) \.mk-select-option\.selected\s*\{/);
 });
 
 test("combobox ARIA only references a mounted listbox and option", () => {

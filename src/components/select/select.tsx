@@ -11,6 +11,7 @@ import {
   captureSelectLayerContext,
   isSelectEventInside,
   selectAria,
+  watchSelectContext,
   watchSelectGeometry,
   type SelectLayerContext,
 } from "./select-layer.mjs";
@@ -155,7 +156,12 @@ export function Select({
     };
     updateMenuPosition();
     const ResizeObserverClass = typeof ResizeObserver === "undefined" ? undefined : ResizeObserver;
-    return watchSelectGeometry(window, triggerRef.current!, updateMenuPosition, ResizeObserverClass);
+    const stopGeometry = watchSelectGeometry(window, triggerRef.current!, updateMenuPosition, ResizeObserverClass);
+    const stopContext = watchSelectContext(document.documentElement, updateMenuPosition, MutationObserver);
+    return () => {
+      stopGeometry();
+      stopContext();
+    };
   }, [open]);
 
   React.useEffect(() => () => clearTimeout(typeaheadTimer.current), []);
