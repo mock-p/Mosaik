@@ -1773,6 +1773,10 @@
     opacity: 0.42;
     cursor: not-allowed;
 }
+.mk-tab[aria-disabled="true"] {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
 .dark .mk-tab.is-active {
     color: var(--mk-tonal-text);
 }

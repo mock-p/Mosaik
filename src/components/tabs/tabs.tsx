@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cx } from "../../internal/cx";
+import { canActivateTab, getNextNavigableTab } from "./tabs-state.mjs";
 
 export interface TabItem {
   value: string;
@@ -7,6 +8,10 @@ export interface TabItem {
   /** Counter chip next to the label. */
   count?: React.ReactNode;
   disabled?: boolean;
+  /** Keep a disabled tab keyboard-focusable and expose it with `aria-disabled`. */
+  focusableDisabled?: boolean;
+  /** ID of contextual content describing this tab. */
+  describedBy?: string;
   /** Optional panel rendered with the correct tabpanel relationship. */
   panel?: React.ReactNode;
 }
@@ -108,21 +113,15 @@ export function Tabs({
 
   const select = (next: string) => {
     const item = items.find((candidate) => candidate.value === next);
-    if (item?.disabled || next === active) return;
+    if (!canActivateTab(item) || next === active) return;
     if (value === undefined) setInternal(next);
     onChange?.(next);
   };
 
   const move = (current: string, direction: 1 | -1 | "first" | "last") => {
-    const enabled = items.filter((item) => !item.disabled);
-    if (enabled.length === 0) return;
-    const currentIndex = enabled.findIndex((item) => item.value === current);
-    let targetIndex: number;
-    if (direction === "first") targetIndex = 0;
-    else if (direction === "last") targetIndex = enabled.length - 1;
-    else targetIndex = (Math.max(currentIndex, 0) + direction + enabled.length) % enabled.length;
-    const target = enabled[targetIndex];
-    select(target.value);
+    const target = getNextNavigableTab(items, current, direction);
+    if (!target) return;
+    if (canActivateTab(target)) select(target.value);
     btnRefs.current.get(target.value)?.focus();
   };
 
@@ -153,8 +152,10 @@ export function Tabs({
             role="tab"
             aria-selected={selected}
             aria-controls={item.panel !== undefined ? panelId : undefined}
+            aria-disabled={item.disabled && item.focusableDisabled ? true : undefined}
+            aria-describedby={item.describedBy}
             tabIndex={selected ? 0 : -1}
-            disabled={item.disabled}
+            disabled={item.disabled && !item.focusableDisabled}
             className={cx("mk-tab", selected && "is-active")}
             onClick={() => select(item.value)}
             onKeyDown={(event) => {
