@@ -184,7 +184,7 @@ export function Table({
                         aria-label={row.rowLabel}
                         onClick={(event) => onRowActivate?.(row, event)}
                         onKeyDown={(event) => {
-                          if (event.key !== "Enter" && event.key !== " ") return;
+                          if (event.key !== " ") return;
                           event.preventDefault();
                           event.currentTarget.click();
                         }}

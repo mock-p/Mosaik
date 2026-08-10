@@ -53,8 +53,16 @@ test("interactive table rows expose a real link and activate with click, Enter, 
   assert.match(link.className, /mk-table-row-link/);
 
   await act(async () => link.click());
-  await act(async () => link.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: "Enter" })));
-  await act(async () => link.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: " " })));
+
+  const enterEvent = new window.KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: "Enter" });
+  await act(async () => link.dispatchEvent(enterEvent));
+  assert.equal(enterEvent.defaultPrevented, false, "Enter remains owned by native link activation");
+  assert.deepEqual(activations, ["atlas"], "keydown does not duplicate native Enter activation");
+  await act(async () => link.click()); // Browser-synthesized click from native Enter activation.
+
+  const spaceEvent = new window.KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: " " });
+  await act(async () => link.dispatchEvent(spaceEvent));
+  assert.equal(spaceEvent.defaultPrevented, true, "Space is normalized without scrolling the page");
   assert.deepEqual(activations, ["atlas", "atlas", "atlas"]);
 
   link.focus();
