@@ -2213,6 +2213,29 @@
 .mk-table tbody tr {
     transition: background-color 0.12s ease;
 }
+.mk-table tbody tr.is-interactive {
+    position: relative;
+}
+.mk-table-row-link {
+    color: inherit;
+    text-decoration: none;
+}
+.mk-table-row-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+.mk-table-row-link:focus-visible {
+    outline: none;
+}
+.mk-table-row-link:focus-visible::after {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: -2px;
+}
+.mk-table tbody tr.is-interactive > td:first-child:has(input) {
+    position: relative;
+    z-index: 1;
+}
 .mk-table tbody tr:hover {
     background: color-mix(in srgb, var(--mk-primary) 3.5%, transparent);
 }

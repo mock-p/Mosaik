@@ -15,6 +15,10 @@ export interface TableRow {
   id: string;
   /** One cell per column, in column order. */
   cells: React.ReactNode[];
+  /** Makes the row navigable through an accessible link in its first data cell. */
+  rowHref?: string;
+  /** Accessible name for the row link. Defaults to the first textual cell. */
+  rowLabel?: string;
 }
 
 export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -36,6 +40,7 @@ export interface TableProps extends React.HTMLAttributes<HTMLDivElement> {
   onSelectionChange?: (ids: string[]) => void;
   selectAllLabel?: string;
   selectionLabel?: (row: TableRow) => string;
+  onRowActivate?: (row: TableRow, event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 /**
@@ -56,6 +61,7 @@ export function Table({
   onSelectionChange,
   selectAllLabel = "Select all rows",
   selectionLabel = (row) => `Select ${row.id}`,
+  onRowActivate,
   className,
   ...rest
 }: TableProps) {
@@ -152,7 +158,10 @@ export function Table({
           {rows.map((row) => {
             const isSelected = sel.includes(row.id);
             return (
-              <tr key={row.id} className={cx(isSelected && "is-selected")}>
+              <tr
+                key={row.id}
+                className={cx(isSelected && "is-selected", row.rowHref && "is-interactive")}
+              >
                 {selectable && (
                   <td>
                     <Checkbox
@@ -168,7 +177,23 @@ export function Table({
                 )}
                 {row.cells.map((cell, i) => (
                   <td key={i} className={cx(columns[i]?.numeric && "num")}>
-                    {cell}
+                    {i === 0 && row.rowHref ? (
+                      <a
+                        className="mk-table-row-link"
+                        href={row.rowHref}
+                        aria-label={row.rowLabel}
+                        onClick={(event) => onRowActivate?.(row, event)}
+                        onKeyDown={(event) => {
+                          if (event.key !== "Enter" && event.key !== " ") return;
+                          event.preventDefault();
+                          event.currentTarget.click();
+                        }}
+                      >
+                        {cell}
+                      </a>
+                    ) : (
+                      cell
+                    )}
                   </td>
                 ))}
               </tr>
