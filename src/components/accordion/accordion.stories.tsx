@@ -6,22 +6,22 @@ const ITEMS = [
   {
     id: "permissions",
     title: "Permissions",
-    meta: <Badge variant="info">3 actives</Badge>,
+    meta: <Badge variant="info">3 active</Badge>,
     content:
-      "Lecture des documents, écriture des tags, accès au presse-papier. Les permissions réseau sont désactivées par défaut.",
+      "Read documents, write tags, and access the clipboard. Network permissions are disabled by default.",
   },
   {
     id: "triggers",
-    title: "Déclencheurs",
+    title: "Triggers",
     content:
-      "À l'ouverture d'un document, à la création d'un bloc, ou planifié (cron).",
+      "When opening a document, creating a block, or on a schedule (cron).",
   },
   {
     id: "advanced",
     disabled: true,
-    title: "Avancé",
+    title: "Advanced",
     content:
-      "Variables d'environnement, version du runtime, journalisation détaillée.",
+      "Environment variables, runtime version, and detailed logging.",
   },
 ];
 

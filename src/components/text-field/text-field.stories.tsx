@@ -97,8 +97,8 @@ export const Disabled: Story = {
 
 export const Search: Story = {
   args: {
-    label: "Recherche",
-    placeholder: "Rechercher un plugin…",
+    label: "Search",
+    placeholder: "Search plugins…",
     helper: undefined,
     iconStart: SearchIcon,
     iconEnd: <Kbd>⌘K</Kbd>,

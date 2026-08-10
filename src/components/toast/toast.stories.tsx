@@ -17,7 +17,7 @@ const meta: Meta<typeof Toast> = {
   args: {
     kind: "success",
     title: "Plugin published",
-    children: "Auto-tagger v2.4.1 est en ligne sur la marketplace.",
+    children: "Auto-tagger v2.4.1 is live on the marketplace.",
     animation: "slide",
     duration: 4200,
     onDismiss: () => {},
@@ -52,16 +52,16 @@ type Story = StoryObj<typeof meta>;
 const CONTENT: Record<ToastKind, { title: string; text: string }> = {
   success: {
     title: "Plugin published",
-    text: "Auto-tagger v2.4.1 est en ligne sur la marketplace.",
+      text: "Auto-tagger v2.4.1 is live on the marketplace.",
   },
-  info: { title: "Build started", text: "Compilation du plugin en cours…" },
+      info: { title: "Build started", text: "Plugin compilation is in progress…" },
   warning: {
-    title: "Quota presque atteint",
-    text: "92 % des exécutions mensuelles utilisées.",
+      title: "Quota nearly reached",
+      text: "92% of monthly runs used.",
   },
   error: {
-    title: "Publication échouée",
-    text: "Le manifest contient une erreur de syntaxe.",
+      title: "Publication failed",
+      text: "The manifest contains a syntax error.",
   },
 };
 
@@ -77,7 +77,7 @@ function ToastStage() {
             key={a}
             name="toast-anim"
             label={
-              { slide: "Glissement", bounce: "Rebond", unfold: "Dépliage" }[a]
+            { slide: "Slide", bounce: "Bounce", unfold: "Unfold" }[a]
             }
             checked={animation === a}
             onChange={() => setAnimation(a)}
@@ -119,7 +119,7 @@ function ToastStage() {
             pointerEvents: "none",
           }}
         >
-          Les toasts apparaissent ici
+        Toasts appear here
         </span>
         <ToastZone>
           {toasts.map((t) => (

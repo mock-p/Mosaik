@@ -49,7 +49,7 @@ export const TooltipTrigger: Story = {
 export const RichTooltip: Story = {
   args: {
     title: "Sandboxed",
-    children: "Le plugin s'exécute isolé, sans accès réseau sortant.",
+    children: "The plugin runs in isolation without outbound network access.",
   },
 };
 
@@ -57,7 +57,7 @@ export const Popover: Story = {
   args: {
     placement: "right",
     title: "Share this plugin",
-    children: "Toute personne disposant du lien pourra installer la version publiée.",
+    children: "Anyone with the link can install the published version.",
     actions: (
       <>
         <FloatingButton>Settings</FloatingButton>

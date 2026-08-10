@@ -37,8 +37,8 @@ type Story = StoryObj<typeof meta>;
 export const WithoutCounts: Story = {
   args: {
     items: [
-      { value: "editor", label: "Éditeur" },
-      { value: "preview", label: "Aperçu" },
+      { value: "editor", label: "Editor" },
+      { value: "preview", label: "Preview" },
       { value: "code", label: "Code" },
     ],
     defaultValue: "editor",
@@ -64,4 +64,9 @@ export const PanelsKeyboardAndDisabled: Story = {
     ],
     defaultValue: "overview",
   },
+};
+
+export const NarrowScrollable: Story = {
+  parameters: { viewport: { defaultViewport: "mobile320" } },
+  decorators: [(Story) => <div style={{ width: 240, maxWidth: "100%", overflowX: "auto" }}><Story /></div>],
 };

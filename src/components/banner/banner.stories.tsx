@@ -10,7 +10,7 @@ const meta: Meta<typeof Banner> = {
     variant: "brand",
     children: (
       <>
-        <strong>Mosaik SDK 3.2 est là.</strong> Déclencheurs planifiés et nouveau runtime.
+      <strong>Mosaik SDK 3.2 is here.</strong> Scheduled triggers and a new runtime.
       </>
     ),
   },
@@ -31,7 +31,7 @@ export const Brand: Story = {
   args: {
     action: (
       <Button size="sm" style={{ background: "#FFFFFF", color: "#2B38C9", borderColor: "#FFFFFF" }}>
-        Découvrir
+        Explore
       </Button>
     ),
     onDismiss: () => {},
@@ -43,7 +43,7 @@ export const Warning: Story = {
     variant: "warning",
     children: (
       <>
-        <strong>Maintenance planifiée</strong> — samedi 14 juin, 02:00–04:00 UTC.
+      <strong>Scheduled maintenance</strong> — Saturday, June 14, 02:00–04:00 UTC.
       </>
     ),
     onDismiss: () => {},

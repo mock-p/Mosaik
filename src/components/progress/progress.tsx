@@ -2,6 +2,8 @@ import * as React from "react";
 import { cx } from "../../internal/cx";
 import { Triangle } from "../triangle";
 
+type ProgressScaleStyle = React.CSSProperties & { "--mk-progress-scale": number };
+
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 0–100. Ignored when `indeterminate`. */
   value?: number;
@@ -17,9 +19,23 @@ export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
   function Progress(
-    { value = 0, label, valueText, success, indeterminate, className, ...rest },
+    {
+      value = 0,
+      label,
+      valueText,
+      success,
+      indeterminate,
+      className,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledby,
+      ...rest
+    },
     ref,
   ) {
+    const labelId = React.useId();
+    const normalizedAriaLabel = ariaLabel?.trim() || undefined;
+    const normalizedAriaLabelledby = ariaLabelledby?.trim() || undefined;
+    const normalizedValue = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0;
     const showHead = label != null || valueText != null;
     return (
       <div
@@ -27,22 +43,28 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={indeterminate ? undefined : value}
+        aria-valuenow={indeterminate ? undefined : normalizedValue}
         className={cx("mk-progress", success && "is-success", className)}
         {...rest}
+        aria-label={normalizedAriaLabel ?? (label == null && normalizedAriaLabelledby == null ? "Progress" : undefined)}
+        aria-labelledby={normalizedAriaLabelledby ?? (normalizedAriaLabel == null && label != null ? labelId : undefined)}
       >
         {showHead && (
           <div className="mk-progress-head">
-            <span>{label}</span>
+            <span id={labelId}>{label}</span>
             <span className="pct">
-              {valueText ?? (indeterminate ? null : `${value} %`)}
+              {valueText ?? (indeterminate ? null : `${normalizedValue} %`)}
             </span>
           </div>
         )}
         <div className="mk-progress-track">
           <div
             className={cx("mk-progress-fill", indeterminate && "indeterminate")}
-            style={indeterminate ? undefined : { width: `${value}%` }}
+            style={
+              indeterminate
+                ? undefined
+                : ({ "--mk-progress-scale": normalizedValue / 100 } as ProgressScaleStyle)
+            }
           />
         </div>
       </div>

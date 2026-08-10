@@ -7,8 +7,8 @@ const meta: Meta<typeof Alert> = {
   tags: ["autodocs"],
   args: {
     variant: "info",
-    title: "Nouvelle version disponible",
-    children: "Mosaik SDK 3.2 apporte les déclencheurs planifiés.",
+    title: "New version available",
+    children: "Mosaik SDK 3.2 adds scheduled triggers.",
   },
   argTypes: {
     variant: {
@@ -41,19 +41,19 @@ export const AllVariants: Story = {
     <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
       <Alert
         variant="info"
-        title="Nouvelle version disponible"
+          title="New version available"
         onDismiss={() => {}}
       >
-        Mosaik SDK 3.2 apporte les déclencheurs planifiés.
+          Mosaik SDK 3.2 adds scheduled triggers.
       </Alert>
-      <Alert variant="success" title="Clé API vérifiée">
-        Votre workspace est connecté.
+        <Alert variant="success" title="API key verified">
+      Your workspace is connected.
       </Alert>
-      <Alert variant="warning" title="Quota presque atteint">
-        92 % des exécutions mensuelles utilisées.
+        <Alert variant="warning" title="Quota nearly reached">
+          92% of monthly runs used.
       </Alert>
-      <Alert variant="danger" title="Build échoué" onDismiss={() => {}}>
-        Le manifest contient une erreur de syntaxe.
+        <Alert variant="danger" title="Build failed" onDismiss={() => {}}>
+          The manifest contains a syntax error.
       </Alert>
     </div>
   ),

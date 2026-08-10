@@ -128,7 +128,7 @@ export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function Modal
           )}
         </div>
       )}
-      <div className="mk-dialog-body">
+      <div className="mk-dialog-body" tabIndex={0}>
         {title != null && (
           <div id={titleId} className="mk-dialog-title">
             {title}

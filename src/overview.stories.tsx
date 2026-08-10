@@ -78,7 +78,7 @@ const secNum: React.CSSProperties = {
   fontFamily: "var(--mk-font-display)",
   fontSize: 13,
   fontWeight: 600,
-  color: "var(--mk-primary)",
+  color: "var(--mk-tonal-text)",
   letterSpacing: ".08em",
 };
 const secTitle: React.CSSProperties = {
@@ -352,8 +352,8 @@ function CardsPanel() {
       <div className="mk-overview-card-grid">
         <Card
           title="Auto-tagger"
-          author="par Lena K."
-          description="Classe automatiquement vos pages Notion avec des tags générés à partir du contenu."
+              author="by Lena K."
+              description="Automatically classify Notion pages with tags generated from their content."
           icon={<Triangle size={18} />}
           badge={<Badge variant="success">Published</Badge>}
           action={
@@ -364,8 +364,8 @@ function CardsPanel() {
         />
         <Card
           title="Linear ↔ Slack Sync"
-          author="par Tomas R."
-          description="Synchronise les issues Linear avec vos canaux Slack, dans les deux sens."
+              author="by Tomas R."
+              description="Synchronize Linear issues with Slack channels in both directions."
           icon={<Triangle size={18} direction="right" />}
           iconTone="coral"
           badge={<Badge variant="info">Beta</Badge>}
@@ -381,7 +381,7 @@ function CardsPanel() {
       <Card
         row
         title="Markdown Export"
-        author="par vous · modifié il y a 2 j"
+              author="by you · updated 2 days ago"
         icon={PlusIcon}
         badge={<Badge variant="neutral">Draft</Badge>}
         action={
@@ -405,7 +405,7 @@ function ContainersPanel() {
         variant="danger"
         metaLabel="Danger zone · Auto-tagger"
         title="Delete this plugin?"
-        footNote="Cette action est irréversible."
+            footNote="This action cannot be undone."
         details={
           <>
             <span>
@@ -431,11 +431,11 @@ function ContainersPanel() {
         }
         onClose={() => {}}
       >
-        « Auto-tagger » sera retiré de la marketplace et désinstallé chez 1 240
-        utilisateurs.
+                “Auto-tagger” will be removed from the marketplace and uninstalled for 1,240
+        users.
       </Modal>
 
-      <div style={rowLabel}>Couche flottante — tooltip & popover unifiés</div>
+          <div style={rowLabel}>Floating layer — unified tooltip and popover</div>
       <div style={{ ...row, gap: 44, alignItems: "flex-end" }}>
         <Spec caption="tooltip · top">
           <div
@@ -465,7 +465,7 @@ function ContainersPanel() {
             }}
           >
             <FloatingLayer placement="top" title="Sandboxed">
-              Le plugin s'exécute isolé, sans accès réseau sortant.
+                  The plugin runs in isolation without outbound network access.
             </FloatingLayer>
             <Button
               variant="outline"
@@ -492,8 +492,7 @@ function ContainersPanel() {
                 </>
               }
             >
-              Toute personne disposant du lien pourra installer la version
-              publiée.
+              Anyone with the link can install the published version.
             </FloatingLayer>
           </div>
         </Spec>
@@ -506,27 +505,27 @@ function FeedbackPanel() {
   const { toasts, push, dismiss } = useToasts();
   return (
     <div className="mk-panel">
-      <div style={{ ...rowLabel, marginTop: 0 }}>Alertes inline</div>
+      <div style={{ ...rowLabel, marginTop: 0 }}>Inline alerts</div>
       <div style={{ display: "grid", gap: 12, maxWidth: 560 }}>
         <Alert
           variant="info"
-          title="Nouvelle version disponible"
+          title="New version available"
           onDismiss={() => {}}
         >
-          Mosaik SDK 3.2 apporte les déclencheurs planifiés.
+            Mosaik SDK 3.2 adds scheduled triggers.
         </Alert>
-        <Alert variant="success" title="Clé API vérifiée">
-          Votre workspace est connecté.
+          <Alert variant="success" title="API key verified">
+            Your workspace is connected.
         </Alert>
-        <Alert variant="warning" title="Quota presque atteint">
-          92 % des exécutions mensuelles utilisées.
+          <Alert variant="warning" title="Quota nearly reached">
+            92% of monthly runs used.
         </Alert>
-        <Alert variant="danger" title="Build échoué" onDismiss={() => {}}>
-          Le manifest contient une erreur de syntaxe.
+          <Alert variant="danger" title="Build failed" onDismiss={() => {}}>
+          The manifest contains a syntax error.
         </Alert>
       </div>
 
-      <div style={rowLabel}>Toasts — déclenchez-les</div>
+          <div style={rowLabel}>Toasts — trigger them</div>
       <div style={{ ...row, marginBottom: 14 }}>
         <Button
           variant="tonal"
@@ -534,7 +533,7 @@ function FeedbackPanel() {
           onClick={() =>
             push("success", {
               title: "Plugin published",
-              text: "Auto-tagger v2.4.1 est en ligne.",
+              text: "Auto-tagger v2.4.1 is live.",
             })
           }
         >
@@ -546,7 +545,7 @@ function FeedbackPanel() {
           onClick={() =>
             push("info", {
               title: "Build started",
-              text: "Compilation du plugin en cours…",
+              text: "Plugin compilation is in progress…",
             })
           }
         >
@@ -557,8 +556,8 @@ function FeedbackPanel() {
           size="sm"
           onClick={() =>
             push("warning", {
-              title: "Quota presque atteint",
-              text: "92 % des exécutions utilisées.",
+              title: "Quota nearly reached",
+              text: "92% of runs used.",
             })
           }
         >
@@ -569,8 +568,8 @@ function FeedbackPanel() {
           size="sm"
           onClick={() =>
             push("error", {
-              title: "Publication échouée",
-              text: "Le manifest contient une erreur.",
+              title: "Publication failed",
+              text: "The manifest contains an error.",
             })
           }
         >
@@ -598,7 +597,7 @@ function FeedbackPanel() {
             pointerEvents: "none",
           }}
         >
-          Les toasts apparaissent ici
+          Toasts appear here
         </span>
         <ToastZone>
           {toasts.map((t) => (
@@ -634,11 +633,11 @@ function NavigationPanel() {
 
       <div style={rowLabel}>Segmented control</div>
       <SegmentedControl
-        options={["Éditeur", "Aperçu", "Code"]}
+              options={["Editor", "Preview", "Code"]}
         aria-label="Mode"
       />
 
-      <div style={rowLabel}>Menu d'actions</div>
+      <div style={rowLabel}>Action menu</div>
       <div style={{ minHeight: 235, maxWidth: 430 }}>
         <Card
           row
@@ -661,7 +660,7 @@ function NavigationPanel() {
           }
         />
         <div className="mk-helper" style={{ marginTop: 10 }}>
-          Cliquez le ⋮ pour ouvrir le menu.
+          Select ⋮ to open the menu.
         </div>
       </div>
 
@@ -684,7 +683,7 @@ function DataPanel() {
   return (
     <div className="mk-panel">
       <div style={{ ...rowLabel, marginTop: 0 }}>
-        Avatars — tailles, tons, statut, groupe
+        Avatars — sizes, tones, status, group
       </div>
       <div style={{ ...row, gap: 24 }}>
         <Avatar size="sm">AL</Avatar>
@@ -707,10 +706,10 @@ function DataPanel() {
       <Table
         columns={[
           { key: "plugin", label: "Plugin", sortable: true },
-          { key: "status", label: "Statut" },
+          { key: "status", label: "Status" },
           { key: "version", label: "Version" },
-          { key: "runs", label: "Exécutions", sortable: true, numeric: true },
-          { key: "updated", label: "Mis à jour" },
+            { key: "runs", label: "Runs", sortable: true, numeric: true },
+            { key: "updated", label: "Updated" },
         ]}
         rows={[
           {
@@ -746,7 +745,7 @@ function DataPanel() {
               <Badge variant="info">Draft</Badge>,
               <span className="muted">0.9.0</span>,
               "1 037",
-              <span className="muted">Hier</span>,
+              <span className="muted">Yesterday</span>,
             ],
           },
         ]}
@@ -757,7 +756,7 @@ function DataPanel() {
 
       <div style={rowLabel}>Progression & spinner</div>
       <div style={{ display: "grid", gap: 16, maxWidth: 380 }}>
-        <Progress value={64} label="Build du plugin" />
+        <Progress value={64} label="Plugin build" />
         <Progress value={100} label="Tests" success />
         <div style={{ ...row, gap: 28 }}>
           <div style={{ flex: 1 }}>
@@ -768,7 +767,7 @@ function DataPanel() {
         </div>
       </div>
 
-      <div style={rowLabel}>Skeleton & état vide</div>
+          <div style={rowLabel}>Skeleton and empty state</div>
       <div className="mk-overview-data-grid">
         <Card style={{ padding: 16 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -784,11 +783,10 @@ function DataPanel() {
           </div>
         </Card>
         <EmptyState
-          title="Aucun plugin pour l'instant"
-          action={<Button>Créer un plugin</Button>}
+          title="No plugins yet"
+                action={<Button>Create plugin</Button>}
         >
-          Créez votre premier plugin ou importez un manifest existant pour
-          démarrer.
+                  Create your first plugin or import an existing manifest to get started.
         </EmptyState>
       </div>
     </div>
@@ -800,7 +798,7 @@ function AdvancedControlsPanel() {
     <div className="mk-panel">
       <div style={{ display: "grid", gap: 22, maxWidth: 480 }}>
         <Slider
-          label="Timeout d'exécution"
+              label="Execution timeout"
           unit=" s"
           min={5}
           max={120}
@@ -808,12 +806,12 @@ function AdvancedControlsPanel() {
           defaultValue={30}
         />
         <div className="mk-field">
-          <span className="mk-field-label">Instances parallèles</span>
+                <span className="mk-field-label">Parallel instances</span>
           <Stepper defaultValue={2} min={1} max={8} aria-label="Instances" />
         </div>
         <TextField
-          label="Recherche"
-          placeholder="Rechercher un plugin…"
+          label="Search"
+          placeholder="Search plugins…"
           iconStart={
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
               <circle
@@ -842,21 +840,21 @@ function AdvancedControlsPanel() {
               {
                 id: "permissions",
                 title: "Permissions",
-                meta: <Badge variant="info">3 actives</Badge>,
+                meta: <Badge variant="info">3 active</Badge>,
                 content:
-                  "Lecture des documents, écriture des tags, accès au presse-papier. Les permissions réseau sont désactivées par défaut.",
+              "Read documents, write tags, and access the clipboard. Network permissions are disabled by default.",
               },
               {
                 id: "triggers",
-                title: "Déclencheurs",
+              title: "Triggers",
                 content:
-                  "À l'ouverture d'un document, à la création d'un bloc, ou planifié (cron).",
+              "When opening a document, creating a block, or on a schedule (cron).",
               },
               {
                 id: "advanced",
-                title: "Avancé",
+              title: "Advanced",
                 content:
-                  "Variables d'environnement, version du runtime, journalisation détaillée.",
+              "Environment variables, runtime version, and detailed logging.",
               },
             ]}
           />
@@ -866,16 +864,16 @@ function AdvancedControlsPanel() {
           <Dropzone
             title={
               <>
-                Glissez votre manifest ici ou <em>parcourez</em>
+                Drop your manifest here or <em>browse</em>
               </>
             }
-            hint="JSON ou YAML · 2 Mo max"
+            hint="JSON or YAML · 2 MB max"
           />
         </div>
         <FileItem
           name="manifest.json"
-          meta="14 Ko · importé"
-          end={<Badge variant="success">Valide</Badge>}
+              meta="14 KB · imported"
+          end={<Badge variant="success">Valid</Badge>}
         />
         <div className="mk-field">
           <span className="mk-field-label">Publication</span>
@@ -910,16 +908,16 @@ function SurfacesPanel() {
                 borderColor: "#FFFFFF",
               }}
             >
-              Découvrir
+              Explore
             </Button>
           }
           onDismiss={() => {}}
         >
-          <strong>Mosaik SDK 3.2 est là.</strong> Déclencheurs planifiés et
-          nouveau runtime.
+              <strong>Mosaik SDK 3.2 is here.</strong> Scheduled triggers and
+          new runtime.
         </Banner>
         <Banner variant="warning" onDismiss={() => {}}>
-          <strong>Maintenance planifiée</strong> — samedi 14 juin, 02:00–04:00
+              <strong>Scheduled maintenance</strong> — Saturday, June 14, 02:00–04:00
           UTC.
         </Banner>
       </div>
@@ -927,6 +925,8 @@ function SurfacesPanel() {
       <div style={rowLabel}>Code</div>
       <div style={{ display: "grid", gap: 14, maxWidth: 480 }}>
         <CodeBlock
+          copyLabel="Copy"
+          copiedLabel="Copied!"
           title="manifest.json"
           code={
             '{\n  "name": "auto-tagger",\n  "version": "2.4.1",\n  "permissions": ["read", "write"]\n}'
@@ -940,8 +940,8 @@ function SurfacesPanel() {
             margin: 0,
           }}
         >
-          Appelez <InlineCode>mosaik.run()</InlineCode> après avoir déclaré le
-          déclencheur dans <InlineCode>manifest.json</InlineCode>.
+              Call <InlineCode>mosaik.run()</InlineCode> after declaring the trigger in
+              <InlineCode>manifest.json</InlineCode>.
         </p>
       </div>
 
@@ -949,13 +949,13 @@ function SurfacesPanel() {
       <div className="mk-drawer-stage" style={{ maxWidth: 640 }}>
         <div className="stage-bg">
           <Button onClick={() => setDrawerOpen(true)}>
-            Configurer le bloc
+            Configure block
           </Button>
         </div>
         <Drawer
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          title="Bloc : Auto-tag"
+          title="Block: Auto-tag"
           footer={
             <>
               <Button
@@ -963,16 +963,16 @@ function SurfacesPanel() {
                 size="sm"
                 onClick={() => setDrawerOpen(false)}
               >
-                Annuler
+                Cancel
               </Button>
               <Button size="sm" onClick={() => setDrawerOpen(false)}>
-                Enregistrer
+                Save
               </Button>
             </>
           }
         >
-          <TextField label="Nom du bloc" defaultValue="Auto-tag" />
-          <Switch label="Actif" defaultChecked />
+          <TextField label="Block name" defaultValue="Auto-tag" />
+          <Switch label="Active" defaultChecked />
         </Drawer>
       </div>
 
@@ -988,6 +988,10 @@ function SurfacesPanel() {
         }}
       >
         <CommandPalette
+          placeholder="What would you like to do?"
+          emptyMessage="No commands found."
+          navigationLabel="navigate"
+          selectionLabel="run"
           groups={[
             {
               label: "Plugin",
@@ -1249,7 +1253,7 @@ function ExampleShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mk-example">
+    <main className="mk-example">
       <style>{exampleStyles}</style>
       <div className="mk-example-head">
         <div>
@@ -1268,7 +1272,7 @@ function ExampleShell({
         {actions != null && <div className="mk-example-actions">{actions}</div>}
       </div>
       <div className="mk-example-stack">{children}</div>
-    </div>
+    </main>
   );
 }
 
@@ -1326,7 +1330,7 @@ function MarketplaceLaunchPage() {
     <ExampleShell
       eyebrow="Example 01"
       title="Marketplace launch room"
-      description="Une page commerciale complète pour mettre en avant les plugins, filtrer le catalogue, rassurer avec des signaux de qualité et pousser l'installation."
+      description="A complete marketplace page for featuring plugins, filtering the catalog, showing quality signals, and encouraging installation."
       actions={
         <>
           <Button
@@ -1349,7 +1353,7 @@ function MarketplaceLaunchPage() {
               borderColor: "#FFFFFF",
             }}
           >
-            Découvrir
+              Explore
           </Button>
         }
         onDismiss={() => {}}
@@ -1416,16 +1420,16 @@ function MarketplaceLaunchPage() {
           <div className="mk-example-card-grid">
             <Card
               title="Auto-tagger"
-              author="par Lena K. · certified"
-              description="Classe les pages Notion avec des tags générés depuis le contenu."
+              author="by Lena K. · certified"
+              description="Classifies Notion pages with tags generated from their content."
               icon={<Triangle size={18} />}
               badge={<Badge variant="success">Published</Badge>}
               action={<Button size="sm">Install</Button>}
             />
             <Card
               title="Linear ↔ Slack Sync"
-              author="par Tomas R. · partner"
-              description="Synchronise les issues Linear avec vos canaux Slack, dans les deux sens."
+              author="by Tomas R. · partner"
+              description="Synchronize Linear issues with Slack channels in both directions."
               icon={<Triangle size={18} direction="right" />}
               iconTone="coral"
               badge={<Badge variant="info">Beta</Badge>}
@@ -1437,8 +1441,8 @@ function MarketplaceLaunchPage() {
             />
             <Card
               title="Figma handoff"
-              author="par June Roy · featured"
-              description="Génère automatiquement notes de release, assets et checklist QA."
+              author="by June Roy · featured"
+              description="Automatically generates release notes, assets, and a QA checklist."
               icon={PlusIcon}
               badge={<Badge variant="featured">Featured</Badge>}
               action={
@@ -1449,8 +1453,8 @@ function MarketplaceLaunchPage() {
             />
             <Card
               title="Markdown Export"
-              author="par vous · draft"
-              description="Transforme vos docs internes en packages téléchargeables."
+              author="by you · draft"
+              description="Turns internal docs into downloadable packages."
               icon={<Triangle size={18} direction="down" />}
               badge={<Badge variant="neutral">Draft</Badge>}
               action={
@@ -1575,7 +1579,7 @@ function PluginBuilderPage() {
     <ExampleShell
       eyebrow="Example 02"
       title="Plugin builder checkout"
-      description="Une surface de configuration qui combine formulaire, validation, import, manifest et étapes de publication pour montrer Mosaik en contexte builder."
+      description="A configuration surface combining forms, validation, imports, manifests, and publishing steps to show Mosaik in a builder context."
       actions={
         <>
           <Button variant="ghost">Save draft</Button>
@@ -1701,19 +1705,21 @@ function PluginBuilderPage() {
                   Drop manifest or <em>browse</em>
                 </>
               }
-              hint="JSON ou YAML · 2 Mo max"
+              hint="JSON or YAML · 2 MB max"
               accept=".json,.yaml,.yml"
             />
           </div>
           <div style={{ marginTop: 14 }}>
             <FileItem
               name="launch-brief.manifest.json"
-              meta="18 Ko · imported"
+              meta="18 KB · imported"
               end={<Badge variant="success">Valid</Badge>}
             />
           </div>
           <div style={{ marginTop: 18 }}>
             <CodeBlock
+              copyLabel="Copy"
+              copiedLabel="Copied!"
               title="manifest.json"
               code={
                 '{\n  "name": "launch-brief",\n  "runtime": "mosaik:3.2",\n  "permissions": ["read", "write"]\n}'
@@ -1758,7 +1764,7 @@ function OpsCommandCenterPage() {
     <ExampleShell
       eyebrow="Example 03"
       title="Operations command center"
-      description="Un dashboard dense pour piloter les runs, surveiller les incidents, communiquer l'état système et lancer des actions rapides."
+      description="A dense dashboard for managing runs, monitoring incidents, communicating system status, and launching quick actions."
       actions={
         <>
           <Button
@@ -2000,6 +2006,10 @@ function OpsCommandCenterPage() {
               }}
             >
               <CommandPalette
+                placeholder="What would you like to do?"
+                emptyMessage="No commands found."
+                navigationLabel="navigate"
+                selectionLabel="run"
                 groups={[
                   {
                     label: "Operations",
@@ -2133,6 +2143,8 @@ function OpsCommandCenterPage() {
             defaultValue="Partner"
           />
           <CodeBlock
+            copyLabel="Copy"
+            copiedLabel="Copied!"
             title="last-error.log"
             code={
               "POST /hooks/slack-notifier\nstatus: 504 gateway timeout\nretry: scheduled in 30s"
@@ -2157,7 +2169,7 @@ type Story = StoryObj;
 
 export const Overview: Story = {
   render: () => (
-    <div className="mk-example">
+    <main className="mk-example">
       <style>{exampleStyles}</style>
       <PageHead />
       <section>
@@ -2198,7 +2210,7 @@ export const Overview: Story = {
       <section>
         <div style={secHead}>
           <span style={secNum}>06</span>
-          <h2 style={secTitle}>Modals &amp; Couche flottante</h2>
+          <h2 style={secTitle}>Modals &amp; floating layers</h2>
         </div>
         <ContainersPanel />
       </section>
@@ -2226,7 +2238,7 @@ export const Overview: Story = {
       <section>
         <div style={secHead}>
           <span style={secNum}>10</span>
-          <h2 style={secTitle}>Contrôles avancés</h2>
+          <h2 style={secTitle}>Advanced controls</h2>
         </div>
         <AdvancedControlsPanel />
       </section>
@@ -2237,7 +2249,7 @@ export const Overview: Story = {
         </div>
         <SurfacesPanel />
       </section>
-    </div>
+    </main>
   ),
 };
 

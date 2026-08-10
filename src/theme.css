@@ -10,6 +10,11 @@
     --mk-r-small: 4px;
     --mk-c1: var(--mk-r-big); /* rounded pair */
     --mk-c2: var(--mk-r-small); /* sharp pair   */
+    --mk-shape-compact: calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.75)
+        calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.75);
+    --mk-shape-control: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
+    --mk-shape-surface: calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1)
+        calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1);
 
     /* type */
     --mk-font-display: "Parkinsans", sans-serif;
@@ -61,7 +66,7 @@
     --mk-text: #13153f;
     --mk-muted: #5c608b;
     --mk-border: #d7daee;
-    --mk-border-strong: #afb4d9;
+    --mk-border-strong: #777da8;
 
     --mk-primary: #3746e6;
     --mk-primary-hover: #2b38c9;
@@ -75,11 +80,25 @@
     --mk-secondary: #ff6e64;
     --mk-secondary-hover: #f95a4f;
     --mk-on-secondary: #34100c;
+    --mk-secondary-text: #b9362d;
+    --mk-accent-foreground: #b9362d;
 
     --mk-danger: #c9281d;
     --mk-danger-hover: #ad1f15;
-    --mk-success: #14855a;
+    --mk-danger-solid: #c9281d;
+    --mk-success: #10754c;
     --mk-warning: #a96a04;
+    --mk-warning-text: #855000;
+
+    /* component roles with repeated visual meaning */
+    --mk-on-solid: #ffffff;
+    --mk-featured-badge: #f0e7ff;
+    --mk-featured-badge-text: #6b2bd9;
+    --mk-scrim: rgba(11, 13, 38, 0.45);
+    --mk-scrim-soft: rgba(11, 13, 38, 0.35);
+    --mk-scrim-strong: rgba(15, 17, 21, 0.52);
+    --mk-syntax-key: #9da6ff;
+    --mk-syntax-string: #ffa49c;
 
     --mk-field-bg: #ffffff;
     --mk-focus-halo: color-mix(in srgb, var(--mk-primary) 16%, transparent);
@@ -106,7 +125,7 @@
     --mk-text: #eeeffb;
     --mk-muted: #9ca0ce;
     --mk-border: #2e3266;
-    --mk-border-strong: #4a4f94;
+    --mk-border-strong: #6f75b2;
 
     --mk-primary: #4654ee;
     --mk-primary-hover: #5d6af5;
@@ -120,11 +139,24 @@
     --mk-secondary: #ff6e64;
     --mk-secondary-hover: #ff8278;
     --mk-on-secondary: #2c0d09;
+    --mk-secondary-text: #ff8278;
+    --mk-accent-foreground: #ff8278;
 
-    --mk-danger: #f0493c;
+    --mk-danger: #f15346;
     --mk-danger-hover: #ff6e64;
+    --mk-danger-solid: #c7352b;
     --mk-success: #36c58d;
     --mk-warning: #efb45a;
+    --mk-warning-text: #efb45a;
+
+    --mk-on-solid: #ffffff;
+    --mk-featured-badge: #2f225f;
+    --mk-featured-badge-text: #d9c2ff;
+    --mk-scrim: rgba(0, 0, 0, 0.55);
+    --mk-scrim-soft: rgba(0, 0, 0, 0.4);
+    --mk-scrim-strong: rgba(0, 0, 0, 0.7);
+    --mk-syntax-key: #3d49c9;
+    --mk-syntax-string: #c9281d;
 
     --mk-field-bg: #101233;
     --mk-focus-halo: color-mix(
@@ -155,9 +187,13 @@
     --color-mk-tonal-text: var(--mk-tonal-text);
     --color-mk-secondary: var(--mk-secondary);
     --color-mk-on-secondary: var(--mk-on-secondary);
+    --color-mk-secondary-text: var(--mk-secondary-text);
+    --color-mk-accent-foreground: var(--mk-accent-foreground);
     --color-mk-danger: var(--mk-danger);
     --color-mk-success: var(--mk-success);
     --color-mk-warning: var(--mk-warning);
+    --color-mk-warning-text: var(--mk-warning-text);
+    --color-mk-on-solid: var(--mk-on-solid);
     --font-mk-display: var(--mk-font-display);
     --font-mk-ui: var(--mk-font-ui);
     --spacing-mk-1: var(--mk-space-1);

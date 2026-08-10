@@ -9,7 +9,7 @@ const meta: Meta<typeof Progress> = {
   tags: ["autodocs"],
   args: {
     value: 64,
-    label: "Build du plugin",
+    label: "Plugin build",
     success: false,
     indeterminate: false,
   },
@@ -44,7 +44,7 @@ function ReplayDemo() {
   const [value, setValue] = React.useState(64);
   return (
     <div style={{ display: "grid", gap: 16, maxWidth: 380 }}>
-      <Progress value={value} label="Build du plugin" />
+      <Progress value={value} label="Plugin build" />
       <Button
         variant="tonal"
         size="sm"
@@ -56,7 +56,7 @@ function ReplayDemo() {
           );
         }}
       >
-        Rejouer
+        Replay
       </Button>
     </div>
   );

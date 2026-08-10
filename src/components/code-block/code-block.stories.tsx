@@ -35,6 +35,8 @@ const meta: Meta<typeof CodeBlock> = {
     title: "manifest.json",
     code: CODE,
     lineNumbers: true,
+    copyLabel: "Copy",
+    copiedLabel: "Copied!",
   },
   argTypes: {
     title: { control: "text" },
@@ -71,8 +73,8 @@ export const Inline: Story = {
         maxWidth: "52ch",
       }}
     >
-      Appelez <InlineCode>mosaik.run()</InlineCode> après avoir déclaré le
-      déclencheur dans <InlineCode>manifest.json</InlineCode>.
+        Call <InlineCode>mosaik.run()</InlineCode> after declaring the trigger in
+        <InlineCode>manifest.json</InlineCode>.
     </p>
   ),
 };

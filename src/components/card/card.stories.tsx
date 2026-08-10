@@ -21,9 +21,9 @@ const meta: Meta<typeof Card> = {
   tags: ["autodocs"],
   args: {
     title: "Auto-tagger",
-    author: "par Lena K.",
+    author: "by Lena K.",
     description:
-      "Classe automatiquement vos pages Notion avec des tags générés à partir du contenu.",
+      "Automatically classify Notion pages with tags generated from their content.",
     icon: <Triangle size={18} />,
     iconTone: "primary",
     badge: <Badge variant="success">Published</Badge>,
@@ -61,7 +61,7 @@ export const PluginCards: Story = {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
         gap: 16,
       }}
     >
@@ -69,8 +69,8 @@ export const PluginCards: Story = {
       <Card
         {...args}
         title="Linear ↔ Slack Sync"
-        author="par Tomas R."
-        description="Synchronise les issues Linear avec vos canaux Slack, dans les deux sens."
+        author="by Tomas R."
+        description="Synchronize Linear issues with Slack channels in both directions."
         icon={<Triangle size={18} direction="right" />}
         iconTone="coral"
         badge={<Badge variant="info">Beta</Badge>}
@@ -88,7 +88,7 @@ export const Row: Story = {
   args: {
     row: true,
     title: "Markdown Export",
-    author: "par vous · modifié il y a 2 j",
+    author: "by you · updated 2 days ago",
     description: undefined,
     icon: PlusIcon,
     badge: <Badge variant="neutral">Draft</Badge>,
@@ -98,4 +98,9 @@ export const Row: Story = {
       </Button>
     ),
   },
+};
+
+export const RowInNarrowParent: Story = {
+  args: { row: true },
+  decorators: [(Story) => <div style={{ width: 240, maxWidth: "100%" }}><Story /></div>],
 };

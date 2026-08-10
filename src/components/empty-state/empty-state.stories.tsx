@@ -7,10 +7,10 @@ const meta: Meta<typeof EmptyState> = {
   component: EmptyState,
   tags: ["autodocs"],
   args: {
-    title: "Aucun plugin pour l'instant",
+    title: "No plugins yet",
     children:
-      "Créez votre premier plugin ou importez un manifest existant pour démarrer.",
-    action: <Button>Créer un plugin</Button>,
+      "Create your first plugin or import an existing manifest to get started.",
+    action: <Button>Create plugin</Button>,
   },
   argTypes: {
     title: { control: "text" },

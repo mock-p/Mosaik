@@ -13,8 +13,8 @@ const meta: Meta<typeof Modal> = {
     metaLabel: "Danger zone · Auto-tagger",
     title: "Delete this plugin?",
     children:
-      "« Auto-tagger » sera retiré de la marketplace et désinstallé chez 1 240 utilisateurs.",
-    footNote: "Cette action est irréversible.",
+      "Auto-tagger will be removed from the marketplace and uninstalled for 1,240 users.",
+    footNote: "This action cannot be undone.",
   },
   argTypes: {
     variant: {
@@ -62,8 +62,8 @@ export const Confirmation: Story = {
     metaLabel: "Publish · Auto-tagger",
     title: "Publish this plugin?",
     children:
-      "La version 2.4.1 sera examinée, puis distribuée automatiquement à vos 1 240 utilisateurs.",
-    footNote: "Publication après examen.",
+      "Version 2.4.1 will be reviewed, then distributed automatically to your 1,240 users.",
+    footNote: "Publication after review.",
     details: (
       <>
         <span>v<strong>2.4.1</strong></span>
@@ -87,8 +87,8 @@ export const Success: Story = {
     metaLabel: "Published · Auto-tagger",
     title: "Plugin published",
     children:
-      "« Auto-tagger » est en ligne sur la marketplace. Les utilisateurs reçoivent la mise à jour dès maintenant.",
-    footNote: "En ligne à l'instant.",
+      "Auto-tagger is live on the marketplace. Users receive the update immediately.",
+    footNote: "Just published.",
     details: (
       <>
         <span>v<strong>2.4.1</strong></span>

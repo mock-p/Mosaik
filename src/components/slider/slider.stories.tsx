@@ -6,7 +6,7 @@ const meta: Meta<typeof Slider> = {
   component: Slider,
   tags: ["autodocs"],
   args: {
-    label: "Timeout d'exécution",
+    label: "Execution timeout",
     unit: " s",
     min: 5,
     max: 120,

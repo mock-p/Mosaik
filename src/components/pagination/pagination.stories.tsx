@@ -50,3 +50,8 @@ export const LinkMode: Story = {
   parameters: { controls: { disable: true } },
   render: () => <LinkDemo />,
 };
+
+export const NarrowScrollable: Story = {
+  parameters: { viewport: { defaultViewport: "mobile390" } },
+  decorators: [(Story) => <div style={{ width: 320, maxWidth: "100%", overflowX: "auto" }}><Story /></div>],
+};

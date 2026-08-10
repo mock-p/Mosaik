@@ -27,7 +27,8 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(f
     uppercase = false,
     cornerAxis,
     disabled = false,
-    href,
+    "aria-disabled": ariaDisabled,
+    href: destination,
     tabIndex,
     onClick,
     className,
@@ -36,12 +37,12 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(f
   },
   ref,
 ) {
+  const effectiveDisabled = disabled || ariaDisabled === true || ariaDisabled === "true";
   return (
     <a
       ref={ref}
-      href={disabled ? undefined : href}
-      aria-disabled={disabled || undefined}
-      tabIndex={disabled ? -1 : tabIndex}
+      href={effectiveDisabled ? undefined : destination}
+      tabIndex={effectiveDisabled ? -1 : tabIndex}
       data-mk-corner={cornerAxis === "trbl" ? "trbl" : undefined}
       className={cx(
         "mk-btn",
@@ -50,17 +51,18 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(f
         iconOnly && "mk-btn-icon",
         fullWidth && "mk-btn-block",
         uppercase && "mk-btn-upper",
-        disabled && "is-disabled",
+        effectiveDisabled && "is-disabled",
         className,
       )}
       onClick={(event) => {
-        if (disabled) {
+        if (effectiveDisabled) {
           event.preventDefault();
           return;
         }
         onClick?.(event);
       }}
       {...rest}
+      aria-disabled={effectiveDisabled || undefined}
     >
       {iconPosition === "start" && icon}
       {!iconOnly && children}

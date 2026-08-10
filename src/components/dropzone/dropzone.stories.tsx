@@ -9,10 +9,10 @@ const meta: Meta<typeof Dropzone> = {
   args: {
     title: (
       <>
-        Glissez votre manifest ici ou <em>parcourez</em>
+        Drop your manifest here or <em>browse</em>
       </>
     ),
-    hint: "JSON ou YAML · 2 Mo max",
+    hint: "JSON or YAML · 2 MB max",
     accept: ".json,.yaml,.yml",
     multiple: false,
   },
@@ -42,8 +42,8 @@ export const WithImportedFile: Story = {
       <Dropzone {...args} />
       <FileItem
         name="manifest.json"
-        meta="14 Ko · importé"
-        end={<Badge variant="success">Valide</Badge>}
+        meta="14 KB · imported"
+        end={<Badge variant="success">Valid</Badge>}
       />
     </div>
   ),

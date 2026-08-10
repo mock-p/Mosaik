@@ -1,6 +1,8 @@
 node_modules/
 dist/
 storybook-static/
+storybook-static-final/
+.superpowers/
 .pnpm-store/
 .env
 .env.*

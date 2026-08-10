@@ -13,9 +13,9 @@ export interface WizardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /** Publication wizard — numbered Mosaik dots joined by connectors. */
-export function Wizard({ steps, current = 0, className, ...rest }: WizardProps) {
+export function Wizard({ steps, current = 0, className, tabIndex, ...rest }: WizardProps) {
   return (
-    <div className={cx("mk-wiz", className)} {...rest}>
+    <div className={cx("mk-wiz", className)} {...rest} tabIndex={tabIndex ?? 0}>
       {steps.map((step, i) => (
         <div
           key={i}

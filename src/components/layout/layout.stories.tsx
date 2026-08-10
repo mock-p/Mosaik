@@ -69,3 +69,19 @@ export const ResponsivePageFoundation: Story = {
     </Section>
   ),
 };
+
+const GridItems = () => <>{["Build", "Preview", "Publish", "Monitor"].map((item) => <Surface key={item} padding="sm"><Text>{item}</Text></Surface>)}</>;
+
+export const FixedGridAtTablet: Story = {
+  parameters: { viewport: { defaultViewport: "tablet" } },
+  render: () => <Grid columns={3}><GridItems /></Grid>,
+};
+
+export const AutoGridAtMobile: Story = {
+  parameters: { viewport: { defaultViewport: "mobile320" } },
+  render: () => <Grid columns="auto" minItemWidth={240}><GridItems /></Grid>,
+};
+
+export const GridParentWidths: Story = {
+  render: () => <Stack>{[240, 320, 480].map((width) => <div key={width} style={{ width, maxWidth: "100%" }}><Text size="sm" tone="muted">{width}px parent</Text><Grid columns="auto" minItemWidth={200}><GridItems /></Grid></div>)}</Stack>,
+};

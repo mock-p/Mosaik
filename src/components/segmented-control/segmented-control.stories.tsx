@@ -6,8 +6,8 @@ const meta: Meta<typeof SegmentedControl> = {
   component: SegmentedControl,
   tags: ["autodocs"],
   args: {
-    options: ["Éditeur", "Aperçu", "Code"],
-    defaultValue: "Éditeur",
+    options: ["Editor", "Preview", "Code"],
+    defaultValue: "Editor",
     "aria-label": "Mode",
   },
   argTypes: {

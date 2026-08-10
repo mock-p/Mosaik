@@ -29,10 +29,18 @@ export const Slider = React.forwardRef<HTMLInputElement, SliderProps>(function S
     defaultValue,
     onChange,
     className,
+    id,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
     ...rest
   },
   ref,
 ) {
+  const isControlled = value !== undefined;
+  const generatedId: string = React.useId();
+  const inputId = id ?? generatedId /* React.useId fallback */;
+  const normalizedAriaLabel = ariaLabel?.trim() || undefined;
+  const normalizedAriaLabelledby = ariaLabelledby?.trim() || undefined;
   const [internal, setInternal] = React.useState(defaultValue ?? min);
   const current = value ?? internal;
   const pct = ((current - min) / (max - min || 1)) * 100;
@@ -41,7 +49,11 @@ export const Slider = React.forwardRef<HTMLInputElement, SliderProps>(function S
     <div className={cx("mk-slider", className)}>
       {(label != null || showValue) && (
         <div className="mk-slider-head">
-          <span className="mk-field-label">{label}</span>
+          {label != null && (
+            <label htmlFor={inputId} className="mk-field-label">
+              {label}
+            </label>
+          )}
           {showValue && (
             <span className="val">
               {current}
@@ -60,11 +72,16 @@ export const Slider = React.forwardRef<HTMLInputElement, SliderProps>(function S
         style={{ "--val": `${pct}%` } as React.CSSProperties}
         onChange={(event) => {
           const next = Number(event.target.value);
-          if (value === undefined) setInternal(next);
+          if (!isControlled) setInternal(next);
           onChange?.(next);
         }}
         {...rest}
+        id={inputId}
+        aria-label={normalizedAriaLabel ?? (label == null && normalizedAriaLabelledby == null ? "Value" : undefined)}
+        aria-labelledby={normalizedAriaLabelledby}
       />
     </div>
   );
 });
+
+Slider.displayName = "Slider";

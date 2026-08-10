@@ -32,6 +32,7 @@ export function CodeBlock({
   React.useEffect(() => () => clearTimeout(timer.current), []);
 
   const lines = code.split("\n");
+  const preLabel = typeof title === "string" ? `${title} code` : "Code";
 
   return (
     <div className={cx("mk-code", className)} {...rest}>
@@ -50,7 +51,7 @@ export function CodeBlock({
           {copied ? copiedLabel : copyLabel}
         </button>
       </div>
-      <pre>
+      <pre tabIndex={0} aria-label={preLabel}>
         {lines.map((line, i) => (
           <span key={i} className="cl">
             {lineNumbers && <span className="ln">{i + 1}</span>}

@@ -4,69 +4,44 @@ import { Meta } from "@storybook/blocks";
 
 # Mosaik
 
-Mosaik is the UI library foundation for Mocka.
+Mosaik is the UI foundation for Mocka. Version 0.1 exposes a public React 18/19 ESM package.
+Import `@mocka/mosaik/styles.css` once at the application root. The published package does not
+load web fonts or ship a CSS reset.
 
-Version 0.1 exposes a public React 18/19 ESM package. Its root JavaScript entrypoint is a
-client boundary for Next.js App Router compatibility. Import `@mocka/mosaik/styles.css`
-once in the application root. The package does not load web fonts or ship a CSS reset.
+Storybook imports local Fontsource packages for **Parkinsans** and **DM Sans** in its preview only.
+Consumer applications remain responsible for loading or self-hosting fonts, keeping the published
+CSS contract network-free.
 
-Its shape language is built on two project shapes: the **square with two opposite rounded
-corners** and the **triangle with two rounded corners and one sharp tip**. The triangle does
-functional work — select chevron, loading spinner, helper-text markers.
+## Foundations
 
-## Tokens
+- Corners: a 16px rounded pair and 4px sharp pair (`--mk-c1` / `--mk-c2`), reversible with `data-mk-corner="trbl"`.
+- Colors: primary `#3746E6`, secondary `#FF6E64`, semantic colors, cool neutrals, and light/dark palettes.
+- Type: Parkinsans for display, buttons, and labels; DM Sans for interface text.
+- Motion: `--mk-ease-standard`, `--mk-ease-out`, and `--mk-ease-overshoot`.
 
-- Corners: 16px rounded pair / 4px sharp pair (`--mk-c1` / `--mk-c2`), axis flippable via `data-mk-corner="trbl"`
-- Colors: primary `#3746E6`, secondary `#FF6E64`, semantic success / warning / danger, cool blue-tinted neutrals, light + dark (`.dark`)
-- Type: Parkinsans (display, buttons, labels) / DM Sans (UI)
-- Shadows: `--mk-shadow-card` / `--mk-shadow-menu` / `--mk-shadow-modal`; inverse tooltip surface `--mk-tooltip-bg` / `--mk-tooltip-text`
+## Component families
 
-## Components
+- Forms: Button, TextField, Textarea, Select, Checkbox, Radio, and Switch.
+- Display: Badge, Tag, Card, Triangle, Avatar, Progress, Skeleton, and EmptyState.
+- Navigation: Tabs, SegmentedControl, ActionMenu, Breadcrumb, Pagination, and LinkButton.
+- Overlays: Modal, FloatingLayer, Drawer, Toast, and CommandPalette.
+- Data and content: Table, CodeBlock, InlineCode, Kbd, Accordion, Dropzone, and Wizard.
+- Layout and typography: Container, Section, Stack, Cluster, Grid, Surface, Divider, Heading, Text, and Prose.
 
-**Forms** — `Button` (6 variants, 3 sizes, icon / loading, radial sphere fill),
-`TextField`, `Textarea`, `Select` (single + multi avec chips), `Checkbox`, `Radio`, `Switch`
-
-**Display** — `Badge`, `Tag`, `Card` (+ variante liste), `Triangle`
-
-**Containers** — `Modal` (structure « technique » : barre méta, détails monospace, pied note + actions),
-`FloatingLayer` (tooltip / popover unifié, surface inverse, 4 directions, pointeur triangle)
-
-**Feedback** — `Alert` (4 sémantiques), `Toast` + `ToastZone` + `useToasts`
-(3 animations d'entrée : glissement, rebond, dépliage)
-
-**Navigation** — `Tabs` (encre élastique 2 phases), `SegmentedControl` (pastille glissante + overshoot),
-`ActionMenu` (kebab, raccourcis ⌘, items danger), `Breadcrumb` (séparateurs triangle), `Pagination`
-
-**Data** — `Avatar` + `AvatarStack` (3 tailles, 3 tons, statut, "+N"), `Table` (tri triangle,
-sélection checkbox + tout sélectionner), `Progress` (déterminée / indéterminée) + `Spinner` triangle,
-`Skeleton` (shimmer), `EmptyState` (illustration deux formes)
-
-**Contrôles avancés** — `Slider` (thumb carré Mosaik, valeur live), `Stepper` numérique borné,
-recherche via `TextField` `iconStart` / `iconEnd` (loupe + `Kbd` ⌘K), `Accordion` (triangle rotatif),
-`Dropzone` + `FileItem`, `Wizard`
-
-**Surfaces** — `Banner` (brand / warning), `CodeBlock` (copie, numéros de ligne) + `InlineCode`,
-`Drawer` (panneau latéral animé), `CommandPalette` (filtre live, navigation clavier)
-
-**Layout & type** — `Container`, `Section`, `Stack`, `Cluster`, `Grid`, `Surface`, `Divider`,
-`Heading`, `Text`, `Prose`, plus `LinkButton` pour les navigations qui reprennent le langage
-visuel des boutons sans imbriquer un bouton dans un lien.
-
-Motion tokens : `--mk-ease-standard` · `--mk-ease-out` · `--mk-ease-overshoot`.
-
-See **Mosaik / All components** for the full specimen sheet.
+See **Mosaik / All components** for the full specimen sheet and dedicated component stories for
+states, semantics, corner axes, themes, and responsive behavior.
 
 ## CSS entrypoints
 
-- `@mocka/mosaik/styles.css` — tokens + composants
-- `@mocka/mosaik/tokens.css` — tokens seuls
-- `@mocka/mosaik/components.css` — styles composants seuls
+- `@mocka/mosaik/styles.css` — tokens and component styles.
+- `@mocka/mosaik/tokens.css` — tokens only.
+- `@mocka/mosaik/components.css` — component styles only.
 
-Les applications chargent ou auto-hébergent Parkinsans et DM Sans. `.dark` active la palette
-sombre; `data-mk-corner="trbl"` inverse l'axe des coins sur un sous-arbre.
+The `.dark` class activates the dark palette. Add `data-mk-corner="trbl"` to reverse the corner
+axis for a subtree.
 
 ## Future scope
 
-- Set d'icônes formalisé
-- Entrées serveur plus granulaires afin de réduire la frontière client
-- Recettes website supplémentaires sans créer de composants métier rigides
+- A formal icon set.
+- More granular server entrypoints to reduce client boundaries.
+- Additional website recipes without rigid domain components.

@@ -6,10 +6,10 @@ import { Table, type TableColumn, type TableRow } from "./table";
 
 const COLUMNS: TableColumn[] = [
   { key: "plugin", label: "Plugin", sortable: true },
-  { key: "status", label: "Statut" },
+  { key: "status", label: "Status" },
   { key: "version", label: "Version" },
-  { key: "runs", label: "Exécutions", sortable: true, numeric: true },
-  { key: "updated", label: "Mis à jour" },
+  { key: "runs", label: "Runs", sortable: true, numeric: true },
+  { key: "updated", label: "Updated" },
 ];
 
 function cellMain(
@@ -40,7 +40,7 @@ const ROWS: TableRow[] = [
       <Badge variant="success">Published</Badge>,
       <span className="muted">2.4.1</span>,
       "48 210",
-      <span className="muted">Il y a 2 h</span>,
+      <span className="muted">2 hours ago</span>,
     ],
   },
   {
@@ -50,7 +50,7 @@ const ROWS: TableRow[] = [
       <Badge variant="info">Draft</Badge>,
       <span className="muted">0.9.0</span>,
       "1 037",
-      <span className="muted">Hier</span>,
+      <span className="muted">Yesterday</span>,
     ],
   },
   {
@@ -60,7 +60,7 @@ const ROWS: TableRow[] = [
       <Badge variant="danger">Deprecated</Badge>,
       <span className="muted">1.2.8</span>,
       "312 940",
-      <span className="muted">12 mai</span>,
+      <span className="muted">May 12</span>,
     ],
   },
 ];
@@ -116,4 +116,9 @@ function SortableDemo() {
 export const Interactive: Story = {
   parameters: { controls: { disable: true } },
   render: () => <SortableDemo />,
+};
+
+export const MobileScrollable: Story = {
+  parameters: { viewport: { defaultViewport: "mobile320" } },
+  decorators: [(Story) => <div style={{ width: 320, maxWidth: "100%", overflowX: "auto" }}><Story /></div>],
 };

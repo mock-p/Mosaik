@@ -39,7 +39,7 @@ export function Example() {
 }
 ```
 
-Mosaik does not load fonts from the network. Applications should load or self-host **Parkinsans** and **DM Sans**, then override `--mk-font-display` and `--mk-font-ui` if different font-family names are used.
+Mosaik does not load fonts from the network. Applications should load or self-host **Parkinsans** and **DM Sans**, then override `--mk-font-display` and `--mk-font-ui` if different font-family names are used. Storybook imports local Fontsource packages in its preview so documentation renders those typefaces without changing the published CSS contract.
 
 ## CSS contract
 

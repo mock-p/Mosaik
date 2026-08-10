@@ -25,3 +25,8 @@ export const TwoLevels: Story = {
     items: [{ label: "Marketplace", href: "#" }, { label: "Auto-tagger" }],
   },
 };
+
+export const MobileViewport: Story = {
+  parameters: { viewport: { defaultViewport: "mobile320" } },
+  decorators: [(Story) => <div style={{ width: 240, maxWidth: "100%" }}><Story /></div>],
+};

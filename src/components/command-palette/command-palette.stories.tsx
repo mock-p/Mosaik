@@ -85,7 +85,10 @@ const meta: Meta<typeof CommandPalette> = {
   tags: ["autodocs"],
   args: {
     groups: GROUPS,
-    placeholder: "Que voulez-vous faire ?",
+    placeholder: "What would you like to do?",
+    emptyMessage: "No commands found.",
+    navigationLabel: "navigate",
+    selectionLabel: "run",
     dialogLabel: "Command palette",
     searchLabel: "Search commands",
   },
@@ -124,6 +127,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Embedded: Story = {};
 
+export const EmbeddedInNarrowParent: Story = {
+  parameters: { viewport: { defaultViewport: "desktop" } },
+  decorators: [(Story) => <div style={{ width: 320, maxWidth: "100%" }}><Story /></div>],
+};
+
 function ModalDemo() {
   const [open, setOpen] = React.useState(false);
   return (
@@ -131,6 +139,10 @@ function ModalDemo() {
       <Button onClick={() => setOpen(true)}>Open command palette</Button>
       <CommandPalette
         groups={GROUPS}
+        placeholder="What would you like to do?"
+        emptyMessage="No commands found."
+        navigationLabel="navigate"
+        selectionLabel="run"
         open={open}
         modal
         closeOnSelect

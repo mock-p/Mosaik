@@ -13,8 +13,8 @@ const meta: Meta<typeof Drawer> = {
   args: {
     open: true,
     fixed: false,
-    title: "Bloc : Auto-tag",
-    children: "Configurez le bloc avant de l'enregistrer.",
+    title: "Block: Auto-tag",
+    children: "Configure the block before saving it.",
   },
   argTypes: {
     open: { control: "boolean" },
@@ -36,29 +36,29 @@ function StageDemo() {
   return (
     <div className="mk-drawer-stage">
       <div className="stage-bg">
-        <Button onClick={() => setOpen(true)}>Configurer le bloc</Button>
+        <Button onClick={() => setOpen(true)}>Configure block</Button>
       </div>
       <Drawer
         open={open}
         onClose={() => setOpen(false)}
-        title="Bloc : Auto-tag"
+        title="Block: Auto-tag"
         footer={
           <>
             <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
-              Annuler
+              Cancel
             </Button>
             <Button size="sm" onClick={() => setOpen(false)}>
-              Enregistrer
+              Save
             </Button>
           </>
         }
       >
-        <TextField label="Nom du bloc" defaultValue="Auto-tag" />
+        <TextField label="Block name" defaultValue="Auto-tag" />
         <div className="mk-field">
           <span className="mk-field-label">Mode</span>
-          <SegmentedControl options={["Auto", "Manuel"]} aria-label="Mode" />
+          <SegmentedControl options={["Auto", "Manual"]} aria-label="Mode" />
         </div>
-        <Switch label="Actif" defaultChecked />
+        <Switch label="Active" defaultChecked />
       </Drawer>
     </div>
   );
@@ -67,4 +67,10 @@ function StageDemo() {
 export const InStage: Story = {
   parameters: { controls: { disable: true } },
   render: () => <StageDemo />,
+};
+
+export const NonFixedAtMobile: Story = {
+  parameters: { viewport: { defaultViewport: "mobile390" } },
+  args: { fixed: false, portal: false, open: true },
+  decorators: [(Story) => <div className="mk-drawer-stage" style={{ width: 320, maxWidth: "100%", minHeight: 440 }}><Story /></div>],
 };
