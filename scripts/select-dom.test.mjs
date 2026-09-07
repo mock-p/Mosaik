@@ -19,6 +19,14 @@ test("closed Select renders safely on the server without dangling popup ARIA", (
   assert.match(html, /aria-expanded="false"/);
   assert.doesNotMatch(html, /aria-controls=/);
   assert.doesNotMatch(html, /role="listbox"/);
+  const defaultOpenHtml = renderToString(React.createElement(Select, {
+    id: "server-default-open-select",
+    defaultOpen: true,
+    options: ["Alpha"],
+  }));
+  assert.match(defaultOpenHtml, /aria-expanded="false"/);
+  assert.doesNotMatch(defaultOpenHtml, /aria-controls=/);
+  assert.doesNotMatch(defaultOpenHtml, /role="listbox"/);
 });
 
 test("mounted Select portals, handles keyboard and selection, tracks context, and closes outside", async () => {
@@ -33,6 +41,7 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   }
   class MutationObserver {
     constructor(callback) {
+      this.callback = callback;
       this.observer = new NativeMutationObserver(callback);
       mutationObservers.push(this);
     }
@@ -109,7 +118,15 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   host.dataset.mkCorner = "tlbr";
   host.style.setProperty("--mk-primary", "#abcdef");
   host.style.fontFamily = "UpdatedSans";
+  // HappyDOM does not invalidate inherited computed font styles on this
+  // React-created trigger, so mirror the resolved browser value on the trigger.
+  trigger.style.fontFamily = host.style.fontFamily;
   await act(async () => await Promise.resolve());
+  assert.equal(window.getComputedStyle(trigger).fontFamily, "UpdatedSans");
+  // HappyDOM can deliver the ancestor mutation before its inherited computed-font
+  // cache is refreshed. Re-run the same observer callback deterministically once
+  // synchronous style mutation is complete, as this test does for ResizeObserver.
+  await act(async () => mutationObservers.at(-1).callback());
   const refreshedWrapper = document.body.querySelector("[role=listbox]").parentElement;
   assert.equal(refreshedWrapper.className, "");
   assert.equal(refreshedWrapper.dataset.mkCorner, "tlbr");
@@ -123,7 +140,7 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   assert.equal(document.body.querySelector("[role=listbox]"), null);
 
   await act(async () => trigger.click());
-  await act(async () => document.body.dispatchEvent(new window.MouseEvent("click", { bubbles: true })));
+  await act(async () => document.body.dispatchEvent(new window.MouseEvent("pointerdown", { bubbles: true })));
   assert.equal(trigger.getAttribute("aria-expanded"), "false");
   assert.equal(trigger.hasAttribute("aria-controls"), false);
   assert.equal(document.body.querySelector("[role=listbox]"), null);
@@ -166,5 +183,68 @@ test("mounted Select portals, handles keyboard and selection, tracks context, an
   await act(async () => multiRoot.unmount());
   assert.equal(observed.every((observer) => observer.disconnected), true);
   assert.equal(mutationObservers.every((observer) => observer.disconnected), true);
+
+  const defaultOpenHost = document.createElement("div");
+  document.body.append(defaultOpenHost);
+  const defaultOpenChanges = [];
+  const defaultOpenRoot = createRoot(defaultOpenHost);
+  await act(async () => {
+    defaultOpenRoot.render(React.createElement(React.StrictMode, null,
+      React.createElement(Select, {
+        id: "default-open-select",
+        defaultOpen: true,
+        "aria-label": "Choose a workspace",
+        onChange: (value) => defaultOpenChanges.push(value),
+        options: ["Alpha", "Beta"],
+      }),
+    ));
+  });
+  const defaultOpenTrigger = defaultOpenHost.querySelector("[role=combobox]");
+  const defaultOpenMenu = document.body.querySelector("#default-open-select-listbox");
+  assert.ok(defaultOpenMenu, "defaultOpen mounts the listbox in the body portal");
+  assert.equal(document.activeElement, defaultOpenTrigger, "defaultOpen focuses the combobox trigger");
+  assert.equal(defaultOpenTrigger.getAttribute("aria-expanded"), "true");
+  assert.equal(defaultOpenTrigger.getAttribute("aria-activedescendant"), `${defaultOpenMenu.id}-option-0`);
+  await act(async () => document.body.dispatchEvent(new window.MouseEvent("click", { bubbles: true })));
+  assert.equal(
+    document.body.querySelector("#default-open-select-listbox") != null,
+    true,
+    "the trailing click from an external mousedown opener does not close a newly mounted picker",
+  );
+  await act(async () => {
+    defaultOpenTrigger.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "Enter" }));
+  });
+  assert.deepEqual(defaultOpenChanges, [["Alpha"]]);
+  assert.equal(document.body.querySelector("#default-open-select-listbox") === null, true);
+  await act(async () => defaultOpenRoot.unmount());
+
+  const edgeHost = document.createElement("div");
+  document.body.append(edgeHost);
+  const edgeRoot = createRoot(edgeHost);
+  await act(async () => {
+    edgeRoot.render(React.createElement(Select, {
+      key: "disabled",
+      id: "disabled-default-open-select",
+      defaultOpen: true,
+      disabled: true,
+      options: ["Alpha"],
+    }));
+  });
+  assert.equal(edgeHost.querySelector("[role=combobox]").getAttribute("aria-expanded"), "false");
+  assert.equal(document.body.querySelector("#disabled-default-open-select-listbox") === null, true);
+  await act(async () => {
+    edgeRoot.render(React.createElement(Select, {
+      key: "empty",
+      id: "empty-default-open-select",
+      defaultOpen: true,
+      "aria-label": "Empty picker",
+      options: [],
+    }));
+  });
+  const emptyTrigger = edgeHost.querySelector("[role=combobox]");
+  assert.equal(emptyTrigger.getAttribute("aria-expanded"), "true");
+  assert.equal(emptyTrigger.hasAttribute("aria-activedescendant"), false);
+  assert.ok(document.body.querySelector("#empty-default-open-select-listbox"));
+  await act(async () => edgeRoot.unmount());
   window.close();
 });

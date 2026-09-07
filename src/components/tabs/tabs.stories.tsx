@@ -70,3 +70,10 @@ export const NarrowScrollable: Story = {
   parameters: { viewport: { defaultViewport: "mobile320" } },
   decorators: [(Story) => <div style={{ width: 240, maxWidth: "100%", overflowX: "auto" }}><Story /></div>],
 };
+
+export const CompactEqualWidth: Story = {
+  args: {
+    size: "sm",
+    equalWidth: true,
+  },
+};

@@ -653,6 +653,126 @@
     margin-left: auto;
 }
 
+/* Searchable single-select. The menu is portalled to avoid clipping in drawers and surfaces. */
+.mk-combobox {
+    position: relative;
+}
+.mk-combobox-toggle {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--mk-muted);
+    cursor: pointer;
+    border-radius: var(--mk-shape-compact);
+}
+.mk-combobox-toggle:hover:not(:disabled) {
+    background: var(--mk-surface-2);
+    color: var(--mk-text);
+}
+.mk-combobox-toggle:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.mk-combobox.open .mk-combobox-toggle svg {
+    transform: rotate(180deg);
+}
+.mk-combobox-toggle svg {
+    transition: transform 0.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.mk-combobox-menu {
+    position: fixed;
+    z-index: 10000;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--mk-field-bg);
+    border: 1.5px solid var(--mk-border);
+    border-radius: var(--mk-shape-control);
+    box-shadow: var(--mk-shadow-menu);
+    font-family: var(--mk-font-ui);
+    color: var(--mk-text);
+}
+.dark .mk-combobox-menu {
+    background: var(--mk-surface);
+    border-color: var(--mk-border-strong);
+}
+.mk-combobox-options {
+    min-height: 0;
+    padding: 6px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.mk-combobox-option {
+    display: flex;
+    min-height: 38px;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: 14.5px;
+    border-radius: var(--mk-shape-compact);
+    -webkit-user-select: none;
+    user-select: none;
+}
+.mk-combobox-option.focused {
+    background: var(--mk-tonal);
+    color: var(--mk-tonal-text);
+}
+.mk-combobox-option.selected {
+    font-weight: 600;
+}
+.mk-combobox-option.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+}
+.mk-combobox-option.is-disabled.focused {
+    background: transparent;
+}
+.mk-combobox-option-content {
+    min-width: 0;
+    flex: 1;
+}
+.mk-combobox-check {
+    flex: none;
+    color: var(--mk-primary);
+}
+.mk-combobox-option.focused .mk-combobox-check {
+    color: currentColor;
+}
+.mk-combobox-empty {
+    padding: 12px;
+    color: var(--mk-muted);
+    font-size: 13px;
+}
+.mk-combobox-menu-header,
+.mk-combobox-menu-footer {
+    flex: none;
+    padding: 8px 12px;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+}
+.mk-combobox-menu-header {
+    border-bottom: 1px solid var(--mk-border);
+}
+.mk-combobox-menu-footer {
+    border-top: 1px solid var(--mk-border);
+    background: var(--mk-field-bg);
+}
+.dark .mk-combobox-menu-footer {
+    background: var(--mk-surface);
+}
+
 /* multi: checkbox in the Mosaik corner motif */
 .mk-select.multi .mk-select-option::before,
 .mk-select-menu.multi .mk-select-option::before {
@@ -1789,6 +1909,19 @@
 .mk-tab-panel:focus-visible {
     outline: 2px solid var(--mk-primary);
     outline-offset: 3px;
+}
+.mk-tabs-sm {
+    gap: 14px;
+}
+.mk-tabs-sm .mk-tab {
+    gap: 6px;
+    padding: 7px 2px 10px;
+    font-size: var(--mk-text-xs);
+}
+.mk-tabs.is-equal .mk-tab {
+    min-width: 0;
+    flex: 1 1 0;
+    justify-content: center;
 }
 
 /* ============================================================
@@ -3454,6 +3587,7 @@
     .mk-drawer-scrim { transition: none; }
     .mk-select-trigger,
     .mk-select-menu,
+    .mk-combobox-toggle svg,
     .mk-menu-panel,
     .mk-action-menu,
     .mk-slider input[type="range"]::-webkit-slider-thumb,

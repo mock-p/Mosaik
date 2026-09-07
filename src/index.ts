@@ -44,6 +44,13 @@ export type {
 export { CodeBlock, InlineCode } from "./components/code-block";
 export type { CodeBlockProps, InlineCodeProps } from "./components/code-block";
 
+export { Combobox } from "./components/combobox";
+export type {
+  ComboboxOption,
+  ComboboxOptionState,
+  ComboboxProps,
+} from "./components/combobox";
+
 export { CommandPalette } from "./components/command-palette";
 export type {
   CommandPaletteProps,

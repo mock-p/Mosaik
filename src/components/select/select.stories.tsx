@@ -76,3 +76,10 @@ export const WithError: Story = {
 export const Disabled: Story = {
   args: { disabled: true },
 };
+
+export const OpenOnMount: Story = {
+  args: {
+    defaultOpen: true,
+    "aria-label": "Choose a workspace",
+  },
+};

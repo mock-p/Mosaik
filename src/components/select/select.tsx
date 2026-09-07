@@ -38,6 +38,8 @@ export interface SelectProps {
   placeholder?: string;
   /** Chips shown before collapsing into "+N". @default 3 */
   maxChips?: number;
+  /** Open and focus the picker when it first mounts. */
+  defaultOpen?: boolean;
   disabled?: boolean;
   label?: React.ReactNode;
   labelHint?: React.ReactNode;
@@ -74,6 +76,7 @@ export function Select({
   onChange,
   placeholder = "Select…",
   maxChips = 3,
+  defaultOpen = false,
   disabled = false,
   label,
   labelHint,
@@ -95,7 +98,7 @@ export function Select({
   const menuId = `${triggerId}-listbox`;
   const describedBy = [ariaDescribedBy, helperId].filter(Boolean).join(" ") || undefined;
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(() => defaultOpen && !disabled);
   const [focusIdx, setFocusIdx] = React.useState(-1);
   const [menuPosition, setMenuPosition] = React.useState<SelectMenuPosition>();
   const [layerContext, setLayerContext] = React.useState<SelectLayerContext>();
@@ -109,6 +112,7 @@ export function Select({
   const menuRef = React.useRef<HTMLDivElement>(null);
   const typeaheadRef = React.useRef("");
   const typeaheadTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const shouldOpenOnMountRef = React.useRef(defaultOpen && !disabled);
 
   const close = React.useCallback(() => {
     setOpen(false);
@@ -133,13 +137,20 @@ export function Select({
   };
 
   React.useEffect(() => {
+    if (!shouldOpenOnMountRef.current) return;
+    shouldOpenOnMountRef.current = false;
+    triggerRef.current?.focus();
+    openMenu();
+  }, []);
+
+  React.useEffect(() => {
     if (!open) return;
     const onDocClick = (event: MouseEvent) => {
       const target = event.target as Node;
       if (!isSelectEventInside(rootRef.current, menuRef.current, target)) close();
     };
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
+    document.addEventListener("pointerdown", onDocClick);
+    return () => document.removeEventListener("pointerdown", onDocClick);
   }, [open, close]);
 
   React.useEffect(() => {

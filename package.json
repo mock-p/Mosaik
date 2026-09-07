@@ -1,6 +1,6 @@
 {
   "name": "@mocka/mosaik",
-  "version": "0.1.0",
+  "version": "0.1.0-internal-dev-eb26453fcb05",
   "description": "Mocka's public React component library and visual foundation.",
   "license": "MIT",
   "type": "module",
@@ -44,10 +44,10 @@
   "scripts": {
     "dev": "storybook dev -p 6006",
     "storybook": "storybook dev -p 6006",
-    "test": "node --test scripts/design-contracts.test.mjs scripts/table-interaction.test.mjs",
+    "test": "node ./scripts/run-tests.mjs",
     "build": "tsup && node ./scripts/build-css.mjs",
     "typecheck": "tsc --noEmit",
-    "check": "node --test scripts/design-contracts.test.mjs scripts/table-interaction.test.mjs && tsc --noEmit"
+    "check": "node ./scripts/run-tests.mjs && tsc --noEmit"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
@@ -66,6 +66,7 @@
     "@tailwindcss/vite": "^4.1.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "happy-dom": "20.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "storybook": "8.6.18",

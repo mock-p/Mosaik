@@ -31,6 +31,10 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   onChange?: (value: string) => void;
   /** Class applied to an optional rendered tab panel. */
   panelClassName?: string;
+  /** Compact or standard tab dimensions. @default "md" */
+  size?: "sm" | "md";
+  /** Give every tab an equal share of the available row width. */
+  equalWidth?: boolean;
 }
 
 const EASE_OUT = "cubic-bezier(.2, .8, .3, 1)";
@@ -43,6 +47,8 @@ export function Tabs({
   defaultValue,
   onChange,
   panelClassName,
+  size = "md",
+  equalWidth = false,
   id,
   className,
   ...rest
@@ -142,7 +148,7 @@ export function Tabs({
       id={baseId}
       role="tablist"
       aria-orientation="horizontal"
-      className={cx("mk-tabs", className)}
+      className={cx("mk-tabs", `mk-tabs-${size}`, equalWidth && "is-equal", className)}
       {...rest}
     >
       {items.map((item, index) => {
