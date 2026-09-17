@@ -98,6 +98,26 @@ function filesBelow(directory) {
   });
 }
 
+test("segmented control uses a concentric internal corner radius", () => {
+  assert.match(
+    theme,
+    /--mk-shape-segment:\s*calc\(var\(--mk-c1\) - 3px\)\s+calc\(var\(--mk-c2\) \* 0\.75\)\s+calc\(var\(--mk-c1\) - 3px\)\s+calc\(var\(--mk-c2\) \* 0\.75\)/,
+  );
+
+  const buttonRules = exactRulesFor(components, ".mk-seg button");
+  const thumbRules = exactRulesFor(components, ".mk-seg-thumb");
+  assert.ok(
+    buttonRules.some(({ declarations }) =>
+      declarations.includes("border-radius: var(--mk-shape-segment)"),
+    ),
+  );
+  assert.ok(
+    thumbRules.some(({ declarations }) =>
+      declarations.includes("border-radius: var(--mk-shape-segment)"),
+    ),
+  );
+});
+
 function openingTags(source, component) {
   const tags = [];
   const marker = `<${component}`;
@@ -228,7 +248,7 @@ test("code header tooltip-text mix meets 4.5:1 on tooltip backgrounds in both th
 });
 
 test("component radii consume semantic shape tokens instead of corner arithmetic", () => {
-  for (const name of ["--mk-shape-compact", "--mk-shape-control", "--mk-shape-surface"]) {
+  for (const name of ["--mk-shape-compact", "--mk-shape-segment", "--mk-shape-control", "--mk-shape-surface"]) {
     assert.match(components, new RegExp(`border-radius\\s*:[^;]*var\\(${name}\\)`, "s"), `no border radius consumes ${name}`);
   }
   assert.doesNotMatch(components, /border-radius\s*:[^;]*calc\(var\(--mk-c[12]\)/s, "border radii still use arbitrary corner multipliers");

@@ -1297,6 +1297,7 @@
     overflow: hidden;
     outline: none;
 }
+.mk-dialog-header,
 .mk-dialog-meta {
     display: flex;
     align-items: center;
@@ -1304,6 +1305,12 @@
     gap: 12px;
     padding: 11px 18px;
     border-bottom: 1.5px solid var(--mk-border);
+}
+.mk-dialog-heading {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 10px;
 }
 .mk-dialog-meta .label {
     font-family: var(--mk-font-display);
@@ -1362,6 +1369,9 @@
     font-size: 17px;
     font-weight: 600;
     color: var(--mk-text);
+    min-width: 0;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 .mk-dialog-text {
     font-family: var(--mk-font-ui);
@@ -1949,7 +1959,7 @@
     font-weight: 500;
     color: var(--mk-muted);
     cursor: pointer;
-    border-radius: var(--mk-shape-compact);
+    border-radius: var(--mk-shape-segment);
     transition: color 0.18s ease;
 }
 .mk-seg button:hover {
@@ -1965,7 +1975,7 @@
     position: absolute;
     z-index: 0;
     background: var(--mk-field-bg);
-    border-radius: var(--mk-shape-compact);
+    border-radius: var(--mk-shape-segment);
     box-shadow: 0 1px 2px rgba(11, 13, 38, 0.12);
     pointer-events: none;
     transform-origin: center;

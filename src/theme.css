@@ -12,6 +12,8 @@
     --mk-c2: var(--mk-r-small); /* sharp pair   */
     --mk-shape-compact: calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.75)
         calc(var(--mk-c1) * 0.5) calc(var(--mk-c2) * 0.75);
+    --mk-shape-segment: calc(var(--mk-c1) - 3px) calc(var(--mk-c2) * 0.75)
+        calc(var(--mk-c1) - 3px) calc(var(--mk-c2) * 0.75);
     --mk-shape-control: var(--mk-c1) var(--mk-c2) var(--mk-c1) var(--mk-c2);
     --mk-shape-surface: calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1)
         calc(var(--mk-c1) * 1.1) calc(var(--mk-c2) * 1.1);

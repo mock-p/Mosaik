@@ -16,6 +16,32 @@ export interface SegmentedControlProps
 
 const EASE_OVER = "cubic-bezier(.3, .9, .35, 1.08)";
 
+interface SegmentButtonProps {
+  item: SegmentItem;
+  active: boolean;
+  onSelect: (value: string) => void;
+  register: (value: string, element: HTMLButtonElement | null) => void;
+}
+
+function SegmentButton({ item, active, onSelect, register }: SegmentButtonProps) {
+  const buttonRef = React.useCallback(
+    (element: HTMLButtonElement | null) => register(item.value, element),
+    [item.value, register],
+  );
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      aria-pressed={active}
+      className={cx(active && "is-active")}
+      onClick={() => onSelect(item.value)}
+    >
+      {item.label}
+    </button>
+  );
+}
+
 /**
  * Segmented control with the sliding pill: a single thumb travels
  * to the chosen segment with a slight overshoot and a subtle squash.
@@ -39,6 +65,7 @@ export function SegmentedControl({
 
   const thumbRef = React.useRef<HTMLSpanElement>(null);
   const btnRefs = React.useRef(new Map<string, HTMLButtonElement>());
+  const geometryObserverRef = React.useRef<ResizeObserver | null>(null);
   const mounted = React.useRef(false);
   const squashTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -82,6 +109,12 @@ export function SegmentedControl({
 
   React.useEffect(() => {
     const reposition = () => placeThumb(true);
+    const geometryObserver =
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(reposition);
+    geometryObserverRef.current = geometryObserver ?? null;
+    btnRefs.current.forEach((button) => geometryObserver?.observe(button));
     let timer: ReturnType<typeof setTimeout>;
     const onResize = () => {
       clearTimeout(timer);
@@ -92,8 +125,26 @@ export function SegmentedControl({
     return () => {
       clearTimeout(timer);
       window.removeEventListener("resize", onResize);
+      geometryObserverRef.current = null;
+      geometryObserver?.disconnect();
     };
   }, [placeThumb]);
+
+  const registerButton = React.useCallback(
+    (itemValue: string, element: HTMLButtonElement | null) => {
+      const previous = btnRefs.current.get(itemValue);
+      if (previous && previous !== element) {
+        geometryObserverRef.current?.unobserve(previous);
+      }
+      if (element) {
+        btnRefs.current.set(itemValue, element);
+        geometryObserverRef.current?.observe(element);
+      } else {
+        btnRefs.current.delete(itemValue);
+      }
+    },
+    [],
+  );
 
   const select = (next: string) => {
     if (next === active) return;
@@ -105,19 +156,13 @@ export function SegmentedControl({
     <div role="group" className={cx("mk-seg", className)} {...rest}>
       <span ref={thumbRef} className="mk-seg-thumb" />
       {items.map((item) => (
-        <button
+        <SegmentButton
           key={item.value}
-          ref={(el) => {
-            if (el) btnRefs.current.set(item.value, el);
-            else btnRefs.current.delete(item.value);
-          }}
-          type="button"
-          aria-pressed={item.value === active}
-          className={cx(item.value === active && "is-active")}
-          onClick={() => select(item.value)}
-        >
-          {item.label}
-        </button>
+          item={item}
+          active={item.value === active}
+          onSelect={select}
+          register={registerButton}
+        />
       ))}
     </div>
   );

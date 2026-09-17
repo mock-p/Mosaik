@@ -71,6 +71,10 @@ export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function Modal
   const titleId = `${reactId}-title`;
   const descriptionId = children != null ? `${reactId}-description` : undefined;
   const [portalReady, setPortalReady] = React.useState(false);
+  const visibleMetaLabel =
+    metaLabel != null && !(typeof metaLabel === "string" && metaLabel === title)
+      ? metaLabel
+      : null;
   const onCloseRef = React.useRef(onClose);
   onCloseRef.current = onClose;
 
@@ -115,12 +119,21 @@ export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function Modal
       className={cx("mk-dialog", variant !== "neutral" && `is-${variant}`, className)}
       {...rest}
     >
-      {(metaLabel != null || onClose != null) && (
-        <div className="mk-dialog-meta">
-          <span className="label">
-            {metaIcon ?? (metaLabel != null ? DEFAULT_META_ICON[variant] : null)}
-            {metaLabel}
-          </span>
+      {(title != null || visibleMetaLabel != null || onClose != null) && (
+        <div className="mk-dialog-header mk-dialog-meta">
+          <div className="mk-dialog-heading">
+            {visibleMetaLabel != null && (
+              <span className="label mk-dialog-meta-label">
+                {metaIcon ?? DEFAULT_META_ICON[variant]}
+                {visibleMetaLabel}
+              </span>
+            )}
+            {title != null && (
+              <div id={titleId} className="mk-dialog-title">
+                {title}
+              </div>
+            )}
+          </div>
           {onClose != null && (
             <button className="mk-dialog-x" type="button" aria-label={closeLabel} onClick={onClose}>
               <CrossGlyph />
@@ -129,11 +142,6 @@ export const Modal = React.forwardRef<HTMLDivElement, ModalProps>(function Modal
         </div>
       )}
       <div className="mk-dialog-body" tabIndex={0}>
-        {title != null && (
-          <div id={titleId} className="mk-dialog-title">
-            {title}
-          </div>
-        )}
         {children != null && (
           <div id={descriptionId} className="mk-dialog-text">
             {children}
