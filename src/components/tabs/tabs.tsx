@@ -179,13 +179,22 @@ export function Tabs({
     if (!list) return;
     measureOverflow();
     list.addEventListener("scroll", measureOverflow, { passive: true });
-    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(measureOverflow) : undefined;
+    // A tab that changes size (a count loaded after mount, a translated label) moves the others:
+    // re-measure, re-place the ink and keep the active tab in view.
+    const onResize = () => {
+      const tab = activeRef.current == null ? null : (btnRefs.current.get(activeRef.current) ?? null);
+      placeInk(tab, true);
+      revealTab(tab, false);
+      measureOverflow();
+    };
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(onResize) : undefined;
     observer?.observe(list);
+    btnRefs.current.forEach((button) => observer?.observe(button));
     return () => {
       list.removeEventListener("scroll", measureOverflow);
       observer?.disconnect();
     };
-  }, [measureOverflow, items.length]);
+  }, [measureOverflow, placeInk, revealTab, items.length]);
 
   const scrollByPage = (direction: 1 | -1) => {
     const list = rootRef.current;
