@@ -98,3 +98,49 @@ test("custom tab IDs remain the label target for internally rendered panels", ()
     },
   );
 });
+
+test("external panels: value-based ids shared by the tab and getTabPanelProps", async () => {
+  const { getTabId, getTabPanelId, getTabPanelProps } = await import("../src/components/tabs/tabs-state.mjs");
+  assert.equal(getTabId("server-tabs", "settings"), "server-tabs-tab-settings");
+  assert.equal(getTabPanelId("server-tabs", "settings"), "server-tabs-panel-settings");
+  assert.equal(getTabId("t", "a b/c"), "t-tab-a-b-c", "values are made id-safe");
+  assert.deepEqual(getTabPanelProps("server-tabs", "settings"), {
+    id: "server-tabs-panel-settings",
+    role: "tabpanel",
+    "aria-labelledby": "server-tabs-tab-settings",
+    tabIndex: 0,
+  });
+  assert.deepEqual(
+    getTabRelationshipIds("server-tabs", 4, { value: "settings" }, { externalPanels: true }),
+    {
+      tabId: "server-tabs-tab-settings",
+      panelId: "server-tabs-panel-settings",
+      controls: "server-tabs-panel-settings",
+      labelledBy: "server-tabs-tab-settings",
+    },
+  );
+  assert.equal(
+    getTabRelationshipIds("x", 0, { value: "a", tabId: "own-tab", controls: "own-panel" }, { externalPanels: true }).controls,
+    "own-panel",
+    "explicit ids still win",
+  );
+});
+
+test("overflow edges, active-tab reveal and page scrolling", async () => {
+  const { getTabsOverflow, getTabScrollLeft, getTabsPageScrollLeft } = await import("../src/components/tabs/tabs-state.mjs");
+  assert.deepEqual(getTabsOverflow({ scrollLeft: 0, clientWidth: 400, scrollWidth: 400 }), { start: false, end: false });
+  assert.deepEqual(getTabsOverflow({ scrollLeft: 0, clientWidth: 300, scrollWidth: 500 }), { start: false, end: true });
+  assert.deepEqual(getTabsOverflow({ scrollLeft: 100, clientWidth: 300, scrollWidth: 500 }), { start: true, end: true });
+  assert.deepEqual(getTabsOverflow({ scrollLeft: 200, clientWidth: 300, scrollWidth: 500 }), { start: true, end: false });
+
+  const metrics = { scrollLeft: 0, clientWidth: 300, scrollWidth: 500 };
+  assert.equal(getTabScrollLeft(metrics, { left: 20, width: 80 }), null, "visible tab: no scroll");
+  assert.equal(getTabScrollLeft(metrics, { left: 400, width: 90 }), 200, "last tab: scroll to the end (clamped)");
+  assert.equal(getTabScrollLeft(metrics, { left: 260, width: 60 }), 60, "hidden tab clears the 40px fade");
+  assert.equal(getTabScrollLeft({ ...metrics, scrollLeft: 200 }, { left: 0, width: 60 }), 0);
+  assert.equal(getTabScrollLeft({ scrollLeft: 0, clientWidth: 300, scrollWidth: 300 }, { left: 0, width: 60 }), null);
+
+  assert.equal(getTabsPageScrollLeft({ ...metrics, scrollWidth: 800 }, 1), 210);
+  assert.equal(getTabsPageScrollLeft({ ...metrics, scrollLeft: 150 }, 1), 200);
+  assert.equal(getTabsPageScrollLeft({ ...metrics, scrollLeft: 150 }, -1), 0);
+});

@@ -74,3 +74,25 @@ export const NonFixedAtMobile: Story = {
   args: { fixed: false, portal: false, open: true },
   decorators: [(Story) => <div className="mk-drawer-stage" style={{ width: 320, maxWidth: "100%", minHeight: 440 }}><Story /></div>],
 };
+
+function BottomSheetDemo() {
+  const [open, setOpen] = React.useState(true);
+  return (
+    <div className="mk-drawer-stage" style={{ width: 390, maxWidth: "100%", height: 560 }}>
+      <div className="stage-bg">
+        <Button onClick={() => setOpen(true)}>Create</Button>
+      </div>
+      <Drawer open={open} onClose={() => setOpen(false)} title="Create" placement="bottom">
+        <Button>New mock</Button>
+        <Button variant="outline">Extension</Button>
+        <Button variant="outline">Resource</Button>
+      </Drawer>
+    </div>
+  );
+}
+
+/** `placement="bottom"`: content-height sheet, drag the handle down to close. */
+export const BottomSheet: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <BottomSheetDemo />,
+};

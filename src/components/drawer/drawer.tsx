@@ -20,7 +20,15 @@ export interface DrawerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   closeLabel?: string;
   /** Element focused when the drawer opens. */
   initialFocusRef?: React.RefObject<HTMLElement | null>;
+  /**
+   * `"right"`: full-height side panel. `"bottom"`: sheet sized to its content (85% of the
+   * viewport at most) with a drag handle that closes it when pulled down. @default "right"
+   */
+  placement?: "right" | "bottom";
 }
+
+/** Distance (px) a bottom sheet must be pulled down to close. */
+export const DRAWER_DRAG_CLOSE_DISTANCE = 80;
 
 /** Modal side drawer with focus containment, restoration and optional body portal. */
 export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
@@ -33,6 +41,7 @@ export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Dra
     portal,
     closeLabel = "Close",
     initialFocusRef,
+    placement = "right",
     className,
     children,
     "aria-label": ariaLabel,
@@ -50,6 +59,42 @@ export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Dra
   onCloseRef.current = onClose;
 
   React.useEffect(() => setPortalReady(true), []);
+
+  // Bottom sheet: pull the handle down to close (the close button, scrim and Escape still work).
+  const drag = React.useRef<{ pointerId: number; startY: number; offset: number } | null>(null);
+  const resetDrag = () => {
+    const drawer = drawerRef.current;
+    drag.current = null;
+    if (!drawer) return;
+    drawer.classList.remove("is-dragging");
+    drawer.style.transform = "";
+  };
+  const handleProps =
+    placement === "bottom" && onClose != null
+      ? {
+          onPointerDown: (event: React.PointerEvent<HTMLDivElement>) => {
+            if (event.button !== 0) return;
+            drag.current = { pointerId: event.pointerId, startY: event.clientY, offset: 0 };
+            event.currentTarget.setPointerCapture?.(event.pointerId);
+            drawerRef.current?.classList.add("is-dragging");
+          },
+          onPointerMove: (event: React.PointerEvent<HTMLDivElement>) => {
+            const current = drag.current;
+            const drawer = drawerRef.current;
+            if (!current || current.pointerId !== event.pointerId || !drawer) return;
+            current.offset = Math.max(0, event.clientY - current.startY);
+            drawer.style.transform = `translateY(${current.offset}px)`;
+          },
+          onPointerUp: (event: React.PointerEvent<HTMLDivElement>) => {
+            const current = drag.current;
+            if (!current || current.pointerId !== event.pointerId) return;
+            const close = current.offset >= DRAWER_DRAG_CLOSE_DISTANCE;
+            resetDrag();
+            if (close) onCloseRef.current?.();
+          },
+          onPointerCancel: resetDrag,
+        }
+      : undefined;
 
   React.useEffect(() => {
     if (!open || (shouldPortal && !portalReady)) return;
@@ -90,8 +135,9 @@ export const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(function Dra
         aria-label={ariaLabel}
         aria-labelledby={ariaLabel == null && title != null ? titleId : undefined}
         tabIndex={-1}
-        className="mk-drawer"
+        className={cx("mk-drawer", placement === "bottom" && "is-bottom")}
       >
+        {placement === "bottom" && <div className="mk-drawer-handle" aria-hidden="true" {...handleProps} />}
         <div className="mk-drawer-head">
           <div id={titleId} className="mk-drawer-title">
             {title}

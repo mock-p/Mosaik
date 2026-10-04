@@ -142,8 +142,8 @@ export type { SwitchProps } from "./components/switch";
 export { Table } from "./components/table";
 export type { TableProps, TableColumn, TableRow } from "./components/table";
 
-export { Tabs } from "./components/tabs";
-export type { TabsProps, TabItem } from "./components/tabs";
+export { Tabs, getTabId, getTabPanelId, getTabPanelProps } from "./components/tabs";
+export type { TabsProps, TabItem, TabPanelProps } from "./components/tabs";
 
 export { Tag } from "./components/tag";
 export type { TagProps } from "./components/tag";

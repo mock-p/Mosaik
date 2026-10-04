@@ -77,3 +77,18 @@ export const CompactEqualWidth: Story = {
     equalWidth: true,
   },
 };
+
+/** More tabs than room: edge fade + scroll buttons, the active tab is scrolled into view. */
+export const OverflowAffordance: Story = {
+  args: {
+    items: [
+      { value: "overview", label: "Overview" },
+      { value: "mocks", label: "Mocks", count: 12 },
+      { value: "files", label: "Files" },
+      { value: "console", label: "Console" },
+      { value: "settings", label: "Settings" },
+    ],
+    defaultValue: "settings",
+  },
+  decorators: [(Story) => <div style={{ width: 300 }}><Story /></div>],
+};

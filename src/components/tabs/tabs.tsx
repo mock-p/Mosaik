@@ -1,9 +1,13 @@
 import * as React from "react";
 import { cx } from "../../internal/cx";
+import { Triangle } from "../triangle";
 import {
   canActivateTab,
   createTabsInteractionController,
   getTabRelationshipIds,
+  getTabScrollLeft,
+  getTabsOverflow,
+  getTabsPageScrollLeft,
 } from "./tabs-state.mjs";
 
 export interface TabItem {
@@ -35,6 +39,18 @@ export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
   size?: "sm" | "md";
   /** Give every tab an equal share of the available row width. */
   equalWidth?: boolean;
+  /**
+   * Panels are rendered outside of Tabs with `getTabPanelProps(id, value)`: every tab gets the
+   * matching value-based `id` and `aria-controls`. Requires an explicit `id`.
+   */
+  externalPanels?: boolean;
+  /**
+   * When the tabs overflow their row: pointer buttons at the faded edges that scroll the list.
+   * The active tab is always scrolled into view. @default true
+   */
+  scrollButtons?: boolean;
+  /** Class of the frame wrapping the tab list (edge fades and scroll buttons). */
+  frameClassName?: string;
 }
 
 const EASE_OUT = "cubic-bezier(.2, .8, .3, 1)";
@@ -49,6 +65,9 @@ export function Tabs({
   panelClassName,
   size = "md",
   equalWidth = false,
+  externalPanels = false,
+  scrollButtons = true,
+  frameClassName,
   id,
   className,
   ...rest
@@ -69,6 +88,29 @@ export function Tabs({
   const phaseTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const activeRef = React.useRef(active);
   activeRef.current = active;
+  const [overflow, setOverflow] = React.useState({ start: false, end: false });
+
+  const measureOverflow = React.useCallback(() => {
+    const list = rootRef.current;
+    if (!list) return;
+    const next = getTabsOverflow(list);
+    setOverflow((current) => (current.start === next.start && current.end === next.end ? current : next));
+  }, []);
+
+  const scrollListTo = React.useCallback((left: number, smooth: boolean) => {
+    const list = rootRef.current;
+    if (!list) return;
+    if (typeof list.scrollTo === "function") list.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
+    else list.scrollLeft = left;
+  }, []);
+
+  // Keep a tab (active or keyboard-focused) clear of the edge fades.
+  const revealTab = React.useCallback((tab: HTMLElement | null | undefined, smooth: boolean) => {
+    const list = rootRef.current;
+    if (!list || !tab) return;
+    const left = getTabScrollLeft(list, { left: tab.offsetLeft, width: tab.offsetWidth });
+    if (left != null) scrollListTo(left, smooth);
+  }, [scrollListTo]);
 
   const placeInk = React.useCallback((tab: HTMLButtonElement | null, noAnim: boolean) => {
     const ink = inkRef.current;
@@ -85,7 +127,8 @@ export function Tabs({
   React.useLayoutEffect(() => {
     const ink = inkRef.current;
     const tab = active == null ? null : (btnRefs.current.get(active) ?? null);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    revealTab(tab, mounted.current && !reduced);
 
     if (!mounted.current || reduced || !ink || !tab) {
       mounted.current = true;
@@ -107,7 +150,7 @@ export function Tabs({
       ink.style.width = `${newR - newL}px`;
     }, 170);
     return () => clearTimeout(phaseTimer.current);
-  }, [active, placeInk]);
+  }, [active, placeInk, revealTab]);
 
   React.useEffect(() => {
     const reposition = () =>
@@ -115,15 +158,41 @@ export function Tabs({
     let timer: ReturnType<typeof setTimeout>;
     const onResize = () => {
       clearTimeout(timer);
-      timer = setTimeout(reposition, 80);
+      timer = setTimeout(() => {
+        reposition();
+        measureOverflow();
+      }, 80);
     };
     window.addEventListener("resize", onResize);
-    document.fonts?.ready.then(reposition);
+    document.fonts?.ready.then(() => {
+      reposition();
+      measureOverflow();
+    });
     return () => {
       clearTimeout(timer);
       window.removeEventListener("resize", onResize);
     };
-  }, [placeInk]);
+  }, [placeInk, measureOverflow]);
+
+  React.useLayoutEffect(() => {
+    const list = rootRef.current;
+    if (!list) return;
+    measureOverflow();
+    list.addEventListener("scroll", measureOverflow, { passive: true });
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(measureOverflow) : undefined;
+    observer?.observe(list);
+    return () => {
+      list.removeEventListener("scroll", measureOverflow);
+      observer?.disconnect();
+    };
+  }, [measureOverflow, items.length]);
+
+  const scrollByPage = (direction: 1 | -1) => {
+    const list = rootRef.current;
+    if (!list) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    scrollListTo(getTabsPageScrollLeft(list, direction), !reduced);
+  };
 
   const select = (next: string) => {
     const item = items.find((candidate) => candidate.value === next);
@@ -139,8 +208,9 @@ export function Tabs({
 
   const activeIndex = items.findIndex((item) => item.value === active);
   const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined;
+  const relationshipOptions = { externalPanels };
   const activeRelationship = activeItem
-    ? getTabRelationshipIds(baseId, activeIndex, activeItem)
+    ? getTabRelationshipIds(baseId, activeIndex, activeItem, relationshipOptions)
     : undefined;
   const tabList = (
     <div
@@ -153,7 +223,7 @@ export function Tabs({
     >
       {items.map((item, index) => {
         const selected = item.value === active;
-        const relationship = getTabRelationshipIds(baseId, index, item);
+        const relationship = getTabRelationshipIds(baseId, index, item, relationshipOptions);
         return (
           <button
             key={item.value}
@@ -172,6 +242,7 @@ export function Tabs({
             disabled={item.disabled && !item.focusableDisabled}
             className={cx("mk-tab", selected && "is-active")}
             onClick={() => interaction.activate(item.value)}
+            onFocus={(event) => revealTab(event.currentTarget, true)}
             onKeyDown={(event) => {
               if (interaction.keyDown(item.value, event.key)) event.preventDefault();
             }}
@@ -185,10 +256,47 @@ export function Tabs({
     </div>
   );
 
-  if (activeItem?.panel === undefined) return tabList;
+  // Pointer-only affordance: keyboard users move with the arrow keys and the active tab is
+  // always scrolled into view, so the buttons stay out of the tab order and the a11y tree.
+  const framed = (
+    <div
+      className={cx(
+        "mk-tabs-frame",
+        overflow.start && "can-scroll-start",
+        overflow.end && "can-scroll-end",
+        frameClassName,
+      )}
+    >
+      {tabList}
+      {scrollButtons && overflow.start && (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="mk-tabs-scroll is-start"
+          onClick={() => scrollByPage(-1)}
+        >
+          <Triangle size={9} direction="left" />
+        </button>
+      )}
+      {scrollButtons && overflow.end && (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="mk-tabs-scroll is-end"
+          onClick={() => scrollByPage(1)}
+        >
+          <Triangle size={9} direction="right" />
+        </button>
+      )}
+    </div>
+  );
+
+  if (activeItem?.panel === undefined) return framed;
   return (
     <div className="mk-tabs-shell">
-      {tabList}
+      {framed}
       <div
         id={activeRelationship?.panelId}
         role="tabpanel"

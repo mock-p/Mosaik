@@ -1995,6 +1995,63 @@
     flex: 1 1 0;
     justify-content: center;
 }
+/* Débordement : fondu sur le bord qui cache des onglets + bouton de défilement (pointeur). */
+.mk-tabs-frame {
+    position: relative;
+    min-width: 0;
+    --mk-tabs-fade-start: 0px;
+    --mk-tabs-fade-end: 0px;
+}
+.mk-tabs-frame.can-scroll-start {
+    --mk-tabs-fade-start: 40px;
+}
+.mk-tabs-frame.can-scroll-end {
+    --mk-tabs-fade-end: 40px;
+}
+.mk-tabs-frame.can-scroll-start > .mk-tabs,
+.mk-tabs-frame.can-scroll-end > .mk-tabs {
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 var(--mk-tabs-fade-start),
+        #000 calc(100% - var(--mk-tabs-fade-end)),
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 var(--mk-tabs-fade-start),
+        #000 calc(100% - var(--mk-tabs-fade-end)),
+        transparent 100%
+    );
+}
+.mk-tabs-scroll {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: 0;
+    bottom: 1.5px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--mk-muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+.mk-tabs-scroll:hover {
+    color: var(--mk-primary);
+}
+.mk-tabs-scroll.is-start {
+    left: 0;
+    justify-content: flex-start;
+}
+.mk-tabs-scroll.is-end {
+    right: 0;
+    justify-content: flex-end;
+}
 
 /* ============================================================
    SEGMENTED CONTROL — pastille glissante, overshoot + écrasement
@@ -3405,6 +3462,45 @@
     gap: 8px;
     padding: 13px 16px;
     border-top: 1.5px solid var(--mk-border);
+}
+/* Feuille du bas (placement="bottom") : hauteur du contenu, 85 % de l'écran au plus. */
+.mk-drawer.is-bottom {
+    top: auto;
+    right: 6px;
+    bottom: 6px;
+    left: 6px;
+    width: auto;
+    max-width: 640px;
+    max-height: min(85%, calc(100% - 12px));
+    margin-inline: auto;
+    transform: translateY(calc(100% + 14px));
+}
+.mk-drawer-root.fixed .mk-drawer.is-bottom {
+    max-height: min(85vh, calc(100% - 12px));
+    max-height: min(85dvh, calc(100% - 12px));
+}
+.mk-drawer-root.open .mk-drawer.is-bottom {
+    transform: none;
+}
+.mk-drawer.is-dragging {
+    transition: none;
+}
+.mk-drawer-handle {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 2px;
+    touch-action: none;
+    cursor: grab;
+}
+.mk-drawer-handle::before {
+    content: "";
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--mk-border-strong);
+}
+.mk-drawer.is-bottom .mk-drawer-head {
+    padding-top: 8px;
 }
 .mk-float-btn:focus-visible {
     outline: 2px solid currentColor;
