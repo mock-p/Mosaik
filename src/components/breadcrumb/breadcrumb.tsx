@@ -5,7 +5,8 @@ import { Triangle } from "../triangle";
 export interface BreadcrumbItem {
   label: React.ReactNode;
   href?: string;
-  onClick?: () => void;
+  /** Receives the click event, e.g. to `preventDefault()` and route client-side. */
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {

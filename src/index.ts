@@ -64,6 +64,9 @@ export type { CardProps } from "./components/card";
 export { Checkbox } from "./components/checkbox";
 export type { CheckboxProps } from "./components/checkbox";
 
+export { Definition } from "./components/definition";
+export type { DefinitionProps } from "./components/definition";
+
 export { Drawer } from "./components/drawer";
 export type { DrawerProps } from "./components/drawer";
 

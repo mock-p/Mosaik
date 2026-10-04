@@ -1571,6 +1571,68 @@
 }
 
 /* ============================================================
+   DEFINITION — terme souligné en pointillé + popover interactif
+   (survol temporisé, focus clavier, tap). Le popover réutilise
+   .mk-float ; il reçoit le pointeur et le focus, contrairement au tooltip.
+   ============================================================ */
+.mk-term {
+    color: inherit;
+    font: inherit;
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 2px;
+    -webkit-tap-highlight-color: transparent;
+}
+.mk-term:hover,
+.mk-term[aria-expanded="true"] {
+    text-decoration-color: currentColor;
+}
+.mk-term:focus-visible {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: 2px;
+}
+.mk-definition-layer {
+    position: fixed;
+    z-index: 1000;
+    width: 264px;
+    max-width: min(264px, calc(100vw - 16px));
+    white-space: normal;
+    text-align: left;
+    pointer-events: auto;
+    animation: mk-tooltip-in 0.12s ease-out;
+}
+.mk-definition-layer:focus {
+    outline: none;
+}
+.mk-definition-layer.place-top .mk-float-ptr,
+.mk-definition-layer.place-bottom .mk-float-ptr {
+    left: var(--mk-def-ptr, 50%);
+}
+.mk-definition-layer.place-left .mk-float-ptr,
+.mk-definition-layer.place-right .mk-float-ptr {
+    top: var(--mk-def-ptr, 50%);
+}
+.mk-definition-layer .mk-float-acts {
+    justify-content: flex-start;
+    margin-top: 9px;
+}
+.mk-definition-layer .mk-float-acts a {
+    color: var(--mk-tooltip-text);
+    font-weight: 600;
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+    border-radius: 2px;
+}
+.mk-definition-layer .mk-float-acts a:focus-visible {
+    outline: 2px solid var(--mk-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================================
    ALERTES INLINE
    ============================================================ */
 .mk-alert {
@@ -3579,6 +3641,7 @@
     .mk-btn { transition: none; }
     .mk-btn::before { transition: none; }
     .mk-tooltip-layer { animation: none; }
+    .mk-definition-layer { animation: none; }
     .mk-seg-thumb.moving { animation: none; }
     .mk-progress-fill { transition: none; }
     .mk-progress-fill.indeterminate { animation: none; }
